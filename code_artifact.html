@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>แผนภาพโครงสร้าง — Zen Chanting Book Architecture</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Sarabun & Noto Serif Thai -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #F7F4EB;
+      --bg-card: #FAF8F2;
+      --border-color: #DFD9C8;
+      --text-primary: #2C2A29;
+      --text-muted: #8C7A6B;
+      --accent: #8C7A6B;
+      --accent-hover: #736255;
+    }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Sarabun', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .font-serif-thai {
+      font-family: 'Noto Serif Thai', serif;
+    }
+    .diagram-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 6px 28px rgba(44, 42, 41, 0.06);
+      border-radius: 1.5rem;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .svg-node {
+      cursor: pointer;
+      transition: filter 0.2s ease, opacity 0.2s ease;
+    }
+    .svg-node:hover {
+      filter: brightness(0.96) drop-shadow(0 4px 10px rgba(140, 122, 107, 0.25));
+    }
+    @keyframes dashFlow {
+      to {
+        stroke-dashoffset: -24;
+      }
+    }
+    .flow-line {
+      stroke-dasharray: 6 6;
+      animation: dashFlow 1.4s linear infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col p-4 sm:p-8">
+
+  <header class="max-w-6xl w-full mx-auto mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[var(--border-color)] pb-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="px-2.5 py-0.5 rounded-full bg-[#EAE4D3] text-[var(--accent)] text-xs font-semibold">System Architecture</span>
+        <span class="text-xs text-[var(--text-muted)]">Zen Chanting Book • Offline Ready</span>
+      </div>
+      <h1 class="font-serif-thai text-xl sm:text-2xl font-bold mt-1 text-[var(--text-primary)]">
+        แผนภาพโครงสร้างและการทำงานของระบบ
+      </h1>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <button onclick="zoomDiagram(0.12)" class="px-3 py-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] hover:border-[var(--accent)] text-xs font-medium transition" title="ซูมเข้า">
+        🔍 ขยาย (+)
+      </button>
+      <button onclick="zoomDiagram(-0.12)" class="px-3 py-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] hover:border-[var(--accent)] text-xs font-medium transition" title="ซูมออก">
+        🔍 ย่อ (-)
+      </button>
+      <button onclick="resetZoom()" class="px-3 py-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] hover:border-[var(--accent)] text-xs font-medium transition" title="ขนาดปกติ">
+        ↺ ขนาดเดิม
+      </button>
+      <button onclick="downloadAsSVG()" class="px-3.5 py-1.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[#FAF8F2] text-xs font-medium shadow-sm transition">
+        📥 บันทึกรูปภาพ (SVG)
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-6xl w-full mx-auto flex-1 flex flex-col items-center">
+    
+    <!-- Interactive Info Banner -->
+    <div id="node-detail-bar" class="w-full mb-4 px-4 py-3 rounded-2xl bg-[#EAE4D3]/70 border border-[var(--border-color)] flex items-center justify-between gap-3 text-xs sm:text-sm">
+      <div class="flex items-center gap-2.5">
+        <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent)] shrink-0"></span>
+        <span id="node-detail-text" class="text-[var(--text-primary)] font-medium">
+          💡 คลิกที่กล่องใดก็ได้ในแผนภาพด้านล่าง เพื่อดูคำอธิบายหน้าที่การทำงานและชื่อไฟล์ที่เกี่ยวข้อง
+        </span>
+      </div>
+      <span id="node-detail-badge" class="px-2.5 py-0.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-[11px] font-mono text-[var(--accent)] shrink-0">
+        Architecture Overview
+      </span>
+    </div>
+
+    <!-- Viewport Container for Zooming -->
+    <div class="w-full overflow-auto pb-4 flex justify-center">
+      <div id="diagram-wrapper" class="diagram-card p-4 sm:p-6 w-full flex justify-center origin-top">
+        
+        <!-- NATIVE SELF-CONTAINED SVG DIAGRAM (Works 100% Offline, No External JS Parser Required) -->
+        <svg id="architecture-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 790" class="w-full h-auto max-w-[1120px]" style="font-family: 'Sarabun', sans-serif;">
+          <defs>
+            <!-- Drop Shadows -->
+            <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="125%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#2C2A29" flood-opacity="0.08"/>
+            </filter>
+            <!-- Arrow Markers -->
+            <marker id="arrow-solid" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#8C7A6B"/>
+            </marker>
+            <marker id="arrow-gold" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#A67C52"/>
+            </marker>
+          </defs>
+
+          <!-- Background Canvas -->
+          <rect width="1120" height="790" rx="20" fill="#FAF8F2"/>
+
+          <!-- ==========================================
+               1. CONNECTING LINES & FLOW PATHS
+               ========================================== -->
+          <!-- Core to 3 Main Pillars -->
+          <path d="M 560 102 L 560 132 L 195 132 L 195 162" fill="none" stroke="#8C7A6B" stroke-width="2.5" marker-end="url(#arrow-solid)"/>
+          <path d="M 560 102 L 560 162" fill="none" stroke="#8C7A6B" stroke-width="2.5" marker-end="url(#arrow-solid)"/>
+          <path d="M 560 102 L 560 132 L 920 132 L 920 162" fill="none" stroke="#8C7A6B" stroke-width="2.5" marker-end="url(#arrow-solid)"/>
+
+          <!-- Pillar 1 (UI) Vertical Spine -->
+          <line x1="195" y1="226" x2="195" y2="545" stroke="#C8BFA8" stroke-width="2"/>
+          <!-- Pillar 2 (Data) Vertical Spine -->
+          <line x1="560" y1="226" x2="560" y2="545" stroke="#C8BFA8" stroke-width="2"/>
+          <!-- Pillar 3 (Modules) Split Spine -->
+          <path d="M 920 226 L 920 250 L 820 250 L 820 275" fill="none" stroke="#8C7A6B" stroke-width="2" marker-end="url(#arrow-solid)"/>
+          <path d="M 920 226 L 920 250 L 1020 250 L 1020 275" fill="none" stroke="#8C7A6B" stroke-width="2" marker-end="url(#arrow-solid)"/>
+
+          <!-- Animated Feedback Loops at Bottom -->
+          <!-- Loop 1: chants-data.js -> Core -->
+          <path d="M 560 645 L 560 735 L 38 735 L 38 62 L 382 62" fill="none" stroke="#A67C52" stroke-width="2.2" class="flow-line" marker-end="url(#arrow-gold)"/>
+          <rect x="135" y="719" width="290" height="28" rx="14" fill="#EFECE1" stroke="#D4C2A1"/>
+          <text x="280" y="737" text-anchor="middle" fill="#6E5A49" font-size="12" font-weight="600">
+            🔄 โหลดข้อมูลบทสวด + เพลย์ลิสต์เข้าเว็บอัตโนมัติเมื่อเปิดไฟล์
+          </text>
+
+          <!-- Loop 2: Module 2 Live Split Admin -> UI -->
+          <path d="M 1020 650 L 1020 700 L 195 700 L 195 648" fill="none" stroke="#8C7A6B" stroke-width="2" class="flow-line" marker-end="url(#arrow-solid)"/>
+          <rect x="640" y="685" width="310" height="28" rx="14" fill="#EFECE1" stroke="#DFD9C8"/>
+          <text x="795" y="703" text-anchor="middle" fill="#5C544D" font-size="12" font-weight="600">
+            ⚡ ซิงก์คำแก้ไขและขนาดฟอนต์รายบรรทัดสู่หน้าสวดมนต์ทันที
+          </text>
+
+
+          <!-- ==========================================
+               2. TOP CORE ENGINE NODE (index.html)
+               ========================================== -->
+          <g class="svg-node" onclick="showNodeDetail('แกนหลักของระบบ (Core Engine — index.html)', 'ควบคุมโครงสร้างหน้าจอหลักทั้งหมด โหมดสวดมนต์ ระบบถนอมสายตา และเปิดช่องเชื่อมต่อให้ไฟล์ฐานข้อมูล (chants-data.js) และโมดูลเสริม (module-1 ถึง 10) ทำงานร่วมกันโดยไม่ต้องแก้โค้ดหลัก', 'index.html')">
+            <rect x="385" y="24" width="350" height="78" rx="18" fill="#8C7A6B" stroke="#5C544D" stroke-width="2" filter="url(#card-shadow)"/>
+            <text x="560" y="57" text-anchor="middle" fill="#FAF8F2" font-size="18" font-weight="700" style="font-family: 'Noto Serif Thai', serif;">
+              📚 Zen Chanting Book (แกนหลัก)
+            </text>
+            <text x="560" y="81" text-anchor="middle" fill="#EAE4D3" font-size="13" font-weight="500">
+              ไฟล์หลัก: index.html (Window.ZenChantApp API)
+            </text>
+          </g>
+
+
+          <!-- ==========================================
+               3. PILLAR 1: USER INTERFACE (ส่วนแสดงผล)
+               ========================================== -->
+          <g class="svg-node" onclick="showNodeDetail('ส่วนแสดงผลและโหมดสวดมนต์ (User Interface)', 'ออกแบบสไตล์ Zen Minimal ไร้สิ่งรบกวนสายตาขณะสวดมนต์ พร้อมแถบควบคุมแบบโปร่งแสง', 'UI Engine')">
+            <rect x="55" y="164" width="280" height="62" rx="14" fill="#D9C39E" stroke="#8C7A6B" stroke-width="2" filter="url(#card-shadow)"/>
+            <text x="195" y="193" text-anchor="middle" fill="#2C2A29" font-size="16" font-weight="700">
+              🖥️ ๑. ส่วนแสดงผล (User Interface)
+            </text>
+            <text x="195" y="213" text-anchor="middle" fill="#5C544D" font-size="12">
+              หน้าสารบัญ &amp; โหมดสวดมนต์ไร้สิ่งรบกวน
+            </text>
+          </g>
+
+          <!-- UI Sub-card 1: Reading Modes -->
+          <g class="svg-node" onclick="showNodeDetail('โหมดการอ่าน (Scroll Mode & Page Mode)', 'เลือกได้ว่าจะเลื่อนอ่านยาวต่อเนื่องทุกบทพร้อม Auto-Scroll (0.25x - 4.0x) หรือเปิดทีละหน้าเหมือนหนังสือจริง', 'Reading Modes')">
+            <rect x="55" y="255" width="280" height="92" rx="12" fill="#F7F4EB" stroke="#DFD9C8" stroke-width="1.5" filter="url(#card-shadow)"/>
+            <rect x="69" y="269" width="12" height="12" rx="3" fill="#8C7A6B"/>
+            <text x="89" y="280" fill="#2C2A29" font-size="14" font-weight="700">โหมดการเปิดอ่านบทสวด</text>
+            <text x="72" y="303" fill="#5C544D" font-size="12.5">• เลื่อนอ่านต่อเนื่องไร้รอยต่อ + Auto-Scroll</text>
+            <text x="72" y="324" fill="#5C544D" font-size="12.5">• เปิดอ่านทีละหน้า (Book Page-by-Page)</text>
+          </g>
+
+          <!-- UI Sub-card 2: Floating HUD & Script -->
+          <g class="svg-node" onclick="showNodeDetail('แถบควบคุมโปร่งแสง (YouTube-Style HUD)', 'มี Timeline ลากข้ามวรรคได้ ปรับสลับภาษาบาลี/ไทย และเลือกรูปแบบอักษรพินทุ (สมฺมา) หรือสะกดไทย (ส๎วากขาโต)', 'HUD & Script')">
+            <rect x="55" y="368" width="280" height="114" rx="12" fill="#F7F4EB" stroke="#DFD9C8" stroke-width="1.5" filter="url(#card-shadow)"/>
+            <rect x="69" y="382" width="12" height="12" rx="3" fill="#8C7A6B"/>
+            <text x="89" y="393" fill="#2C2A29" font-size="14" font-weight="700">แถบควบคุมสไตล์ YouTube + ภาษา</text>
+            <text x="72" y="416" fill="#5C544D" font-size="12.5">• เลือกเปิด: บาลี+แปล / เฉพาะบาลี / เฉพาะไทย</text>
+            <text x="72" y="437" fill="#5C544D" font-size="12.5">• สลับ: บาลีสะกดไทย (ยามักการ ๎) / พินทุ ( ฺ )</text>
+            <text x="72" y="458" fill="#5C544D" font-size="12.5">• ปรับขนาดฟอนต์ (18–100px) &amp; บีบความกว้างคำ</text>
+          </g>
+
+          <!-- UI Sub-card 3: Eye Care & Glass -->
+          <g class="svg-node" onclick="showNodeDetail('โหมดถนอมสายตา & ความใส UI (Eye-Care & Frosted Glass)', 'สลับโทนสีกระดาษธรรมชาติ ซีเปียอุ่น โหมดกลางคืน พร้อมแถบกรองแสงสีฟ้า และปรับความใสของแถบเมนูเพื่อไม่ให้บังบทสวด', 'Eye-Care & Glass UI')">
+            <rect x="55" y="503" width="280" height="114" rx="12" fill="#F7F4EB" stroke="#DFD9C8" stroke-width="1.5" filter="url(#card-shadow)"/>
+            <rect x="69" y="517" width="12" height="12" rx="3" fill="#8C7A6B"/>
+            <text x="89" y="528" fill="#2C2A29" font-size="14" font-weight="700">โหมดถนอมสายตา &amp; ความใส UI</text>
+            <text x="72" y="551" fill="#5C544D" font-size="12.5">• 3 โทนสี: ธรรมชาติ / ซีเปียอุ่น / กลางคืน</text>
+            <text x="72" y="572" fill="#5C544D" font-size="12.5">• แถบลดแสงสีฟ้า (Warmth Filter 0–55%)</text>
+            <text x="72" y="593" fill="#5C544D" font-size="12.5">• ปรับความใส HUD (กระจกสีอ่อน / เข้ม / ไร้กรอบ)</text>
+          </g>
+
+
+          <!-- ==========================================
+               4. PILLAR 2: DATA & ADMIN SYSTEM (ฐานข้อมูล)
+               ========================================== -->
+          <g class="svg-node" onclick="showNodeDetail('ระบบฐานข้อมูลและผู้ดูแล (Data & Admin System)', 'จัดการข้อมูลบทสวดมนต์ทั้ง 6 ภาค เก็บลงหน่วยความจำเครื่อง และส่งออกเป็นไฟล์กลางสำหรับแชร์ข้ามเครื่อง', 'Data System')">
+            <rect x="420" y="164" width="280" height="62" rx="14" fill="#D9C39E" stroke="#8C7A6B" stroke-width="2" filter="url(#card-shadow)"/>
+            <text x="560" y="193" text-anchor="middle" fill="#2C2A29" font-size="16" font-weight="700">
+              💾 ๒. ระบบฐานข้อมูล (Data System)
+            </text>
+            <text x="560" y="213" text-anchor="middle" fill="#5C544D" font-size="12">
+              จัดการบทสวด 6 ภาค &amp; ซิงก์ข้ามเครื่อง
+            </text>
+          </g>
+
+          <!-- Data Sub-card 1: Admin Mode -->
+          <g class="svg-node" onclick="showNodeDetail('ระบบผู้ดูแล (Admin Mode — รหัสผ่าน: Karn)', 'ใช้รหัสผ่าน Karn เพื่อเข้าแก้ไข เพิ่ม ลบ เรียงลำดับวรรค พร้อมปุ่มช่วยพิมพ์ พินทุ ( ฺ ) นิคหิต ( ํ ) ยามักการ ( ๎ )', 'Admin: Karn')">
+            <rect x="420" y="255" width="280" height="92" rx="12" fill="#F7F4EB" stroke="#DFD9C8" stroke-width="1.5" filter="url(#card-shadow)"/>
+            <rect x="434" y="269" width="12" height="12" rx="3" fill="#8C7A6B"/>
+            <text x="454" y="280" fill="#2C2A29" font-size="14" font-weight="700">โหมดผู้ดูแลระบบ (รหัสผ่าน: Karn)</text>
+            <text x="437" y="303" fill="#5C544D" font-size="12.5">• เพิ่ม / ลบ / แก้ไขบทสวดและคำแปลทีละวรรค</text>
+            <text x="437" y="324" fill="#5C544D" font-size="12.5">• ปุ่มแทรกอักขระบาลี (พินทุ, นิคหิต, ยามักการ)</text>
+          </g>
+
+          <!-- Data Sub-card 2: Stack JSON Import -->
+          <g class="svg-node" onclick="showNodeDetail('ระบบนำเข้า JSON แบบสแต็กต่อท้าย (Stack JSON Import)', 'นำเข้าไฟล์ JSON ทีละภาค (ภาค ๑ ถึง ภาค ๖) โดยเรียงต่อท้ายกันไปเรื่อยๆ ไม่ทับบทที่มีชื่อซ้ำ', 'JSON Import/Export')">
+            <rect x="420" y="368" width="280" height="95" rx="12" fill="#F7F4EB" stroke="#DFD9C8" stroke-width="1.5" filter="url(#card-shadow)"/>
+            <rect x="434" y="382" width="12" height="12" rx="3" fill="#8C7A6B"/>
+            <text x="454" y="393" fill="#2C2A29" font-size="14" font-weight="700">นำเข้า JSON แบบสแต็กต่อท้าย 100%</text>
+            <text x="437" y="416" fill="#5C544D" font-size="12.5">• อัปโหลดไฟล์ .json แยกตามภาค १–๖ ต่อกันได้</text>
+            <text x="437" y="437" fill="#5C544D" font-size="12.5">• ไม่ทับบทสวดชื่อซ้ำที่อยู่คนละวัตร/คนละภาค</text>
+          </g>
+
+          <!-- Data Sub-card 3: Shared JS Database -->
+          <g class="svg-node" onclick="showNodeDetail('ไฟล์ฐานข้อมูลแชร์ข้ามเครื่อง (chants-data.js)', 'เมื่อกดปุ่มบันทึกแชร์ข้ามเครื่อง ระบบจะสร้างไฟล์ chants-data.js วางคู่กับ index.html ทำให้เปิดจากคอมเครื่องอื่นเห็นข้อมูลครบทันที', 'chants-data.js')">
+            <rect x="420" y="485" width="280" height="160" rx="14" fill="#2C2A29" stroke="#8C7A6B" stroke-width="2" filter="url(#card-shadow)"/>
+            <text x="560" y="517" text-anchor="middle" fill="#D9C39E" font-size="15" font-weight="700">
+              📦 ไฟล์ฐานข้อมูลกลาง (chants-data.js)
+            </text>
+            <text x="560" y="542" text-anchor="middle" fill="#E2DDD2" font-size="12.5">
+              วางในโฟลเดอร์แชร์คู่กับ index.html
+            </text>
+            <line x1="445" y1="556" x2="675" y2="556" stroke="#5C544D" stroke-width="1"/>
+            <text x="445" y="578" fill="#D8D2C5" font-size="12">✓ เก็บบทสวดมนต์ทั้งหมด (SHARED_CHANTS)</text>
+            <text x="445" y="599" fill="#D8D2C5" font-size="12">✓ เก็บเพลย์ลิสต์ที่สร้างไว้ (SHARED_PLAYLISTS)</text>
+            <text x="445" y="620" fill="#D8D2C5" font-size="12">✓ เก็บขนาดฟอนต์รายบรรทัด &amp; โมดูลเสริม</text>
+          </g>
+
+
+          <!-- ==========================================
+               5. PILLAR 3: MODULAR PLUGINS (โมดูลเสริมแยกไฟล์)
+               ========================================== -->
+          <g class="svg-node" onclick="showNodeDetail('ระบบโมดูลเสริมแยกไฟล์ (Modular Plugin System)', 'ต่อเติมฟีเจอร์ใหม่ๆ ได้เรื่อยๆ โดยเซฟเป็นไฟล์แยก (เช่น module-1.js, module-2.js) วางในโฟลเดอร์ ไม่ต้องเสี่ยงแก้ index.html', 'Plugin Architecture')">
+            <rect x="755" y="164" width="330" height="62" rx="14" fill="#D9C39E" stroke="#8C7A6B" stroke-width="2" filter="url(#card-shadow)"/>
+            <text x="920" y="193" text-anchor="middle" fill="#2C2A29" font-size="16" font-weight="700">
+              🧩 ๓. ระบบโมดูลเสริม (Plugin Modules)
+            </text>
+            <text x="920" y="213" text-anchor="middle" fill="#5C544D" font-size="12">
+              แยกไฟล์ .js อิสระ ดูแลรักษาง่าย ไม่กระทบไฟล์หลัก
+            </text>
+          </g>
+
+          <!-- Module 1 Card (Left column under Plugins) -->
+          <g class="svg-node" onclick="showNodeDetail('โมดูลที่ 1: แถบเพลย์ลิสต์ด้านซ้าย (module-1.js)', 'ปุ่ม Hamburger มุมซ้ายบน เปิดลิ้นชักจัดการคิวสวดมนต์และบันทึกเพลย์ลิสต์โดยไม่บีบหรือยืดหน้าสารบัญฝั่งขวา', 'module-1.js')">
+            <rect x="735" y="278" width="175" height="235" rx="14" fill="#F7F4EB" stroke="#8C7A6B" stroke-width="2" filter="url(#card-shadow)"/>
+            <rect x="735" y="278" width="175" height="46" rx="14" fill="#EAE4D3"/>
+            <text x="822" y="300" text-anchor="middle" fill="#2C2A29" font-size="13.5" font-weight="700">📄 module-1.js</text>
+            <text x="822" y="316" text-anchor="middle" fill="#736255" font-size="11" font-weight="600">แถบเพลย์ลิสต์ซ้ายมือ</text>
+
+            <text x="748" y="348" fill="#2C2A29" font-size="12" font-weight="600">• ปุ่ม ☰ เพลย์ลิสต์</text>
+            <text x="756" y="366" fill="#5C544D" font-size="11.5">เปิด-ปิดลิ้นชักฝั่งซ้าย</text>
+
+            <text x="748" y="394" fill="#2C2A29" font-size="12" font-weight="600">• เลื่อนติ๊กเลือกสะดวก</text>
+            <text x="756" y="412" fill="#5C544D" font-size="11.5">เห็นคิวที่เลือกตลอดเวลา</text>
+            <text x="756" y="429" fill="#5C544D" font-size="11.5">ไม่ยืดหน้าจอฝั่งขวา</text>
+
+            <text x="748" y="457" fill="#2C2A29" font-size="12" font-weight="600">• จัดคิว &amp; เซฟเพลย์ลิสต์</text>
+            <text x="756" y="475" fill="#5C544D" font-size="11.5">เรียงลำดับ ↑ ↓ และบันทึก</text>
+            <text x="756" y="492" fill="#5C544D" font-size="11.5">ไว้เปิดสวดครั้งถัดไป</text>
+          </g>
+
+          <!-- Module 2 Card (Right column under Plugins) -->
+          <g class="svg-node" onclick="showNodeDetail('โมดูลที่ 2: Split-Screen Admin & จัดฟอนต์รายบรรทัด (module-2.js)', 'เปิดหน้าแก้บทสวดฝั่งขวาควบคู่กับหน้าสวดมนต์ฝั่งซ้ายเห็นผลทันที พร้อมคลิกที่บรรทัดเพื่อปรับขนาดฟอนต์แยกทีละบรรทัดเหมือน MS Word', 'module-2.js')">
+            <rect x="922" y="278" width="178" height="370" rx="14" fill="#F7F4EB" stroke="#8C7A6B" stroke-width="2" filter="url(#card-shadow)"/>
+            <rect x="922" y="278" width="178" height="46" rx="14" fill="#EAE4D3"/>
+            <text x="1011" y="300" text-anchor="middle" fill="#2C2A29" font-size="13.5" font-weight="700">📄 module-2.js</text>
+            <text x="1011" y="316" text-anchor="middle" fill="#736255" font-size="11" font-weight="600">แก้สดครึ่งจอ &amp; รายบรรทัด</text>
+
+            <text x="934" y="348" fill="#2C2A29" font-size="12" font-weight="600">• Split-Screen Admin</text>
+            <text x="942" y="366" fill="#5C544D" font-size="11.5">เปิดหน้าผู้ดูแลฝั่งขวา</text>
+            <text x="942" y="383" fill="#5C544D" font-size="11.5">ดันหน้าสวดมนต์ไปฝั่งซ้าย</text>
+            <text x="942" y="400" fill="#5C544D" font-size="11.5">พิมพ์แก้ปุ๊บ เห็นผลปั๊บ</text>
+
+            <text x="934" y="428" fill="#2C2A29" font-size="12" font-weight="600">• ฟอนต์รายบรรทัด</text>
+            <text x="942" y="446" fill="#5C544D" font-size="11.5">คลิกบรรทัดใดก็ได้ในหน้า</text>
+            <text x="942" y="463" fill="#5C544D" font-size="11.5">สวดมนต์เพื่อปรับขนาด px</text>
+            <text x="942" y="480" fill="#5C544D" font-size="11.5">และบีบคำเฉพาะบรรทัดนั้น</text>
+
+            <text x="934" y="508" fill="#2C2A29" font-size="12" font-weight="600">• ปุ่ม ⚡ พอดี 1 บรรทัด</text>
+            <text x="942" y="526" fill="#5C544D" font-size="11.5">คำนวณขนาดฟอนต์อัตโนมัติ</text>
+            <text x="942" y="543" fill="#5C544D" font-size="11.5">ไม่ให้คำตกบรรทัด</text>
+
+            <text x="934" y="571" fill="#2C2A29" font-size="12" font-weight="600">• แก้คำบนหน้ากระดาษ</text>
+            <text x="942" y="589" fill="#5C544D" font-size="11.5">พิมพ์แก้คำในแถบลอย</text>
+            <text x="942" y="606" fill="#5C544D" font-size="11.5">ซิงก์กลับเข้าฐานข้อมูล</text>
+          </g>
+
+          <!-- Future Modules Slot Card (Under Module 1) -->
+          <g class="svg-node" onclick="showNodeDetail('ช่องรองรับโมดูลในอนาคต (module-3.js ถึง module-10.js)', 'ใน index.html เปิดช่องโหลดไฟล์ module-3.js ถึง module-10.js รอไว้แล้ว สามารถเพิ่มฟีเจอร์ใหม่ได้ทันทีโดยไม่ต้องแก้ไฟล์เก่า', 'module-3..10.js')">
+            <rect x="735" y="532" width="175" height="116" rx="14" fill="#FAF8F2" stroke="#C8BFA8" stroke-width="1.8" stroke-dasharray="5 4"/>
+            <text x="822" y="562" text-anchor="middle" fill="#8C7A6B" font-size="13" font-weight="700">➕ โมดูลในอนาคต</text>
+            <text x="822" y="582" text-anchor="middle" fill="#6E665E" font-size="11.5">module-3.js ถึง 10.js</text>
+            <text x="822" y="604" text-anchor="middle" fill="#9A9083" font-size="11">วางไฟล์เพิ่มในโฟลเดอร์</text>
+            <text x="822" y="621" text-anchor="middle" fill="#9A9083" font-size="11">เพื่อขยายฟีเจอร์ได้ทันที</text>
+          </g>
+
+        </svg>
+
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mt-4">
+      <div class="p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
+        <h4 class="font-semibold text-xs text-[var(--accent)] mb-1">1. แกนหลัก (index.html)</h4>
+        <p class="text-xs text-[#6E665E] leading-relaxed">
+          ควบคุมหน้าจอหลัก ระบบถนอมสายตา และการสลับโหมดสวดมนต์ พร้อมเปิดช่องเชื่อมต่อโมดูลเสริมภายนอกโดยไม่ต้องแก้ไฟล์หลักซ้ำ
+        </p>
+      </div>
+      <div class="p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
+        <h4 class="font-semibold text-xs text-[var(--accent)] mb-1">2. ฐานข้อมูลกลาง (chants-data.js)</h4>
+        <p class="text-xs text-[#6E665E] leading-relaxed">
+          นำเข้าบทสวดผ่าน JSON แบบสแต็กต่อท้าย และกดปุ่มบันทึกเป็นไฟล์ <code>chants-data.js</code> เพื่อแชร์ข้ามเครื่องในโฟลเดอร์เดียวกันได้ทันที
+        </p>
+      </div>
+      <div class="p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
+        <h4 class="font-semibold text-xs text-[var(--accent)] mb-1">3. โมดูลเสริม (module-1.js, module-2.js)</h4>
+        <p class="text-xs text-[#6E665E] leading-relaxed">
+          แยกไฟล์อิสระสำหรับระบบลิ้นชักเพลย์ลิสต์ด้านซ้าย และระบบ Split-Screen แก้ไขบทสวดสดพร้อมปรับขนาดฟอนต์รายบรรทัด
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let currentZoom = 1.0;
+
+    function zoomDiagram(delta) {
+      currentZoom = Math.max(0.6, Math.min(1.8, currentZoom + delta));
+      const el = document.getElementById('diagram-wrapper');
+      if (el) {
+        el.style.transform = `scale(${currentZoom})`;
+      }
+    }
+
+    function resetZoom() {
+      currentZoom = 1.0;
+      const el = document.getElementById('diagram-wrapper');
+      if (el) {
+        el.style.transform = 'scale(1)';
+      }
+    }
+
+    function showNodeDetail(title, desc, badgeText) {
+      const textEl = document.getElementById('node-detail-text');
+      const badgeEl = document.getElementById('node-detail-badge');
+      const barEl = document.getElementById('node-detail-bar');
+      if (textEl) {
+        textEl.innerHTML = `<strong class="text-[var(--accent)]">${title}:</strong> ${desc}`;
+      }
+      if (badgeEl) {
+        badgeEl.textContent = badgeText;
+      }
+      if (barEl) {
+        barEl.style.borderColor = 'var(--accent)';
+      }
+    }
+
+    function downloadAsSVG() {
+      const svgEl = document.getElementById('architecture-svg');
+      if (!svgEl) return;
+      const svgData = new XMLSerializer().serializeToString(svgEl);
+      const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'zen-chant-architecture.svg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

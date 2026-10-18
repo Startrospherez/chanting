@@ -1,0 +1,3144 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>รวมบทสวดมนต์ — หนังสือสวดมนต์ออนไลน์ (Zen Minimal)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Noto Serif Thai & Sarabun -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@300;400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #F7F4EB;
+      --bg-secondary: #EFECE1;
+      --bg-card: #FAF8F2;
+      --border-color: #DFD9C8;
+      --text-primary: #2C2A29;
+      --text-secondary: #6E665E;
+      --text-muted: #9A9083;
+      --accent: #8C7A6B;
+      --accent-hover: #736255;
+      --accent-soft: #EAE4D3;
+      --translation-text: #5C544D;
+      --hud-bg: rgba(38, 35, 32, 0.88);
+      --hud-text: #F7F4EB;
+      --hud-border: rgba(255, 255, 255, 0.14);
+      --font-chant: 'Noto Serif Thai', serif;
+      --font-ui: 'Sarabun', sans-serif;
+    }
+
+    /* Warm Sepia Eye-Care Theme */
+    body.theme-sepia {
+      --bg-primary: #F2E6CE;
+      --bg-secondary: #E6D7B9;
+      --bg-card: #F6ECD8;
+      --border-color: #D4C2A1;
+      --text-primary: #3B2F2F;
+      --text-secondary: #68564E;
+      --text-muted: #8F7B6E;
+      --accent: #8A6547;
+      --accent-hover: #6E4F36;
+      --accent-soft: #E3D2B2;
+      --translation-text: #5E4B43;
+      --hud-bg: rgba(48, 38, 31, 0.90);
+      --hud-text: #F5EBD6;
+      --hud-border: rgba(245, 235, 214, 0.16);
+    }
+
+    /* Zen Dark / Night Chant Theme */
+    body.theme-dark {
+      --bg-primary: #181715;
+      --bg-secondary: #22201D;
+      --bg-card: #1F1E1B;
+      --border-color: #33302B;
+      --text-primary: #D8D2C5;
+      --text-secondary: #9E978B;
+      --text-muted: #6E685F;
+      --accent: #A8947D;
+      --accent-hover: #C2AE96;
+      --accent-soft: #2B2824;
+      --translation-text: #9C9488;
+      --hud-bg: rgba(18, 17, 15, 0.92);
+      --hud-text: #E2DDD2;
+      --hud-border: rgba(226, 221, 210, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      transition: background-color 0.35s ease, color 0.35s ease;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    .font-serif-thai {
+      font-family: 'Noto Serif Thai', serif;
+    }
+
+    .font-sans-thai {
+      font-family: 'Sarabun', sans-serif;
+    }
+
+    .chant-typography {
+      font-family: var(--font-chant);
+    }
+
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+
+    /* Blue-light warm filter overlay */
+    #warmth-overlay {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(255, 166, 43, 1);
+      mix-blend-mode: multiply;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    body.theme-dark #warmth-overlay {
+      mix-blend-mode: overlay;
+      background: rgba(255, 145, 0, 1);
+    }
+
+    /* HUD transition */
+    .hud-element {
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hud-hidden-top {
+      opacity: 0 !important;
+      transform: translateY(-20px) !important;
+      pointer-events: none !important;
+    }
+    .hud-hidden-bottom {
+      opacity: 0 !important;
+      transform: translateY(24px) !important;
+      pointer-events: none !important;
+    }
+
+    /* Page transition animation */
+    @keyframes pageFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .page-animate {
+      animation: pageFadeIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Range slider styling */
+    input[type="range"].zen-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type="range"].zen-slider::-webkit-slider-runnable-track {
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(140, 122, 107, 0.32);
+    }
+    input[type="range"].zen-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      background: #D9C39E;
+      border: 2px solid #6E5A49;
+      margin-top: -5px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+      transition: transform 0.15s ease;
+    }
+    input[type="range"].zen-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* YouTube-style timeline scrubber */
+    .timeline-container {
+      position: relative;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .timeline-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(140, 122, 107, 0.3);
+      border-radius: 999px;
+      overflow: visible;
+      position: relative;
+      transition: height 0.15s ease;
+    }
+    .timeline-container:hover .timeline-track {
+      height: 6px;
+    }
+    .timeline-fill {
+      height: 100%;
+      background: #8C7A6B;
+      border-radius: 999px;
+      position: relative;
+    }
+    .timeline-thumb {
+      width: 13px;
+      height: 13px;
+      background: #F7F4EB;
+      border: 2px solid #8C7A6B;
+      border-radius: 50%;
+      position: absolute;
+      right: -6.5px;
+      top: 50%;
+      transform: translateY(-50%) scale(0.85);
+      transition: transform 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    }
+    .timeline-container:hover .timeline-thumb {
+      transform: translateY(-50%) scale(1.15);
+    }
+
+    /* Subtle Zen border card */
+    .zen-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      transition: all 0.25s ease;
+    }
+    .zen-card:hover {
+      border-color: var(--accent);
+    }
+
+    /* Reading Focus Line (optional subtle indicator) */
+    #focus-guide-line {
+      pointer-events: none;
+      position: fixed;
+      top: 38%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(88vw, 760px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--accent) 20%, var(--accent) 80%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 15;
+    }
+    #focus-guide-line.active {
+      opacity: 0.22;
+    }
+  </style>
+</head>
+<body class="min-h-screen selection:bg-[#D5CBB8] selection:text-[#2C2A29]">
+
+  <!-- Eye-Care Warm Filter Overlay -->
+  <div id="warmth-overlay"></div>
+
+  <!-- Subtle Reading Guide Line in Chanting Mode -->
+  <div id="focus-guide-line"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ==========================================
+       VIEW 1: HOME & TABLE OF CONTENTS (สารบัญ)
+       ========================================== -->
+  <div id="home-view" class="min-h-screen flex flex-col">
+    
+    <!-- Minimalist Top Header -->
+    <header class="sticky top-0 z-30 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-[var(--border-color)] transition-colors">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        <!-- Brand / Title -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-[var(--accent-soft)] border border-[var(--border-color)] flex items-center justify-center text-[var(--accent)]">
+            <!-- Lotus SVG Icon -->
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3C10 7 9 11 12 15C15 11 14 7 12 3Z"/>
+              <path d="M12 15C8.5 11.5 5 10 3 11C4.5 14.5 7.5 17 12 17"/>
+              <path d="M12 15C15.5 11.5 19 10 21 11C19.5 14.5 16.5 17 12 17"/>
+              <path d="M5 19C8.5 20.2 15.5 20.2 19 19"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="font-serif-thai text-lg sm:text-xl font-semibold tracking-wide text-[var(--text-primary)] leading-tight">รวมบทสวดมนต์</h1>
+            <p class="text-xs text-[var(--text-muted)] hidden sm:block">หนังสือสวดมนต์ออนไลน์ • สงบ เรียบง่าย ถนอมสายตา</p>
+          </div>
+        </div>
+
+        <!-- Quick Actions: Script Default, Eye Care, Admin -->
+        <div class="flex items-center gap-2">
+          
+          <!-- Quick Script Selector Badge -->
+          <button onclick="cyclePaliScript()" id="home-script-btn" title="สลับรูปแบบคำอ่านบาลี"
+            class="px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--accent)] transition flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-[var(--accent)]"></span>
+            <span id="home-script-label">บาลีสะกดไทย (สระอะ/ยามักการ)</span>
+          </button>
+
+          <!-- Eye Care Theme Quick Button -->
+          <div class="relative">
+            <button onclick="toggleHomeEyeCarePopover(event)" id="eye-care-btn"
+              class="p-2 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--accent)] transition flex items-center gap-1.5"
+              title="โหมดถนอมสายตา">
+              <svg class="w-4 h-4 text-[var(--accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <span class="hidden md:inline" id="current-theme-label">ถนอมสายตา</span>
+            </button>
+
+            <!-- Home Eye Care Popover -->
+            <div id="home-eyecare-popover" onclick="event.stopPropagation()"
+              class="hidden absolute right-0 mt-2 w-72 rounded-2xl p-4 shadow-xl border border-[var(--border-color)] bg-[var(--bg-card)] z-50">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">โหมดสีถนอมสายตา</span>
+                <button onclick="closeAllPopovers()" class="text-[var(--text-muted)] hover:text-[var(--text-primary)]">✕</button>
+              </div>
+              <div class="grid grid-cols-3 gap-2 mb-4">
+                <button onclick="setTheme('natural')" id="theme-btn-natural"
+                  class="flex flex-col items-center gap-1.5 p-2.5 rounded-xl border border-[#DFD9C8] bg-[#F7F4EB] text-[#2C2A29] text-xs font-medium transition">
+                  <span class="w-5 h-5 rounded-full bg-[#EAE4D3] border border-[#C8BFA8]"></span>
+                  <span>ธรรมชาติ</span>
+                </button>
+                <button onclick="setTheme('sepia')" id="theme-btn-sepia"
+                  class="flex flex-col items-center gap-1.5 p-2.5 rounded-xl border border-[#D4C2A1] bg-[#F2E6CE] text-[#3B2F2F] text-xs font-medium transition">
+                  <span class="w-5 h-5 rounded-full bg-[#E3D2B2] border border-[#B89F74]"></span>
+                  <span>ซีเปียอุ่น</span>
+                </button>
+                <button onclick="setTheme('dark')" id="theme-btn-dark"
+                  class="flex flex-col items-center gap-1.5 p-2.5 rounded-xl border border-[#33302B] bg-[#181715] text-[#D8D2C5] text-xs font-medium transition">
+                  <span class="w-5 h-5 rounded-full bg-[#2B2824] border border-[#524C44]"></span>
+                  <span>กลางคืน</span>
+                </button>
+              </div>
+              <div class="space-y-1.5 pt-2 border-t border-[var(--border-color)]">
+                <div class="flex justify-between text-xs text-[var(--text-secondary)]">
+                  <span>ลดแสงสีฟ้า (ความอุ่นของหน้าจอ)</span>
+                  <span id="home-warmth-val">0%</span>
+                </div>
+                <input type="range" min="0" max="55" value="0" id="home-warmth-slider"
+                  oninput="setWarmthFilter(this.value)"
+                  class="w-full accent-[var(--accent)] cursor-pointer h-1.5 rounded-lg bg-[var(--border-color)]" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Button -->
+          <button onclick="handleAdminButtonClick()" id="nav-admin-btn"
+            class="p-2 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--accent)] transition flex items-center gap-1.5"
+            title="ระบบผู้ดูแล (Admin)">
+            <svg class="w-4 h-4 text-[var(--accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <span class="hidden sm:inline" id="admin-btn-text">ผู้ดูแล</span>
+          </button>
+
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Book Index Container -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      
+      <!-- Zen Intro Banner & Global Reading Settings -->
+      <section class="mb-8 text-center sm:text-left flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-[var(--border-color)]">
+        <div>
+          <p class="text-xs uppercase tracking-widest text-[var(--accent)] font-medium mb-1">สารบัญหนังสือสวดมนต์</p>
+          <h2 class="font-serif-thai text-2xl sm:text-3xl font-semibold text-[var(--text-primary)]">เลือกบทสวดมนต์ที่ต้องการ</h2>
+          <p class="text-sm text-[var(--text-secondary)] mt-1">
+            เลือกเปิดอ่านทีละบท หรือติ๊กเลือกหลายบทเพื่อจัดเพลย์ลิสต์สวดต่อเนื่องเสมือนเปิดหนังสือจริง
+          </p>
+        </div>
+
+        <!-- Action Buttons: Start All -->
+        <div class="flex flex-wrap items-center justify-center sm:justify-end gap-2.5" id="home-action-buttons">
+          <button onclick="startChantingAll()"
+            class="px-4 py-2.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[#FAF8F2] text-sm font-medium transition shadow-sm flex items-center gap-2">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <span>สวดต่อเนื่องทุกบทตามลำดับ</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Search & Category Filter Bar -->
+      <section class="mb-6 space-y-3">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <!-- Search input -->
+          <div class="relative flex-1">
+            <svg class="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+            <input type="text" id="search-input" oninput="renderHomeChantList()"
+              placeholder="ค้นหาชื่อบทสวด หรือเนื้อหา เช่น อิติปิ โส, แผ่เมตตา..."
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] transition" />
+          </div>
+
+          <!-- Quick Language / Script Preference Pills -->
+          <div class="flex items-center gap-1.5 bg-[var(--bg-secondary)] p-1 rounded-xl border border-[var(--border-color)] self-start sm:self-auto">
+            <button onclick="setLanguageMode('both')" id="home-lang-both"
+              class="px-3 py-1.5 rounded-lg text-xs font-medium transition">บาลี + แปลไทย</button>
+            <button onclick="setLanguageMode('pali')" id="home-lang-pali"
+              class="px-3 py-1.5 rounded-lg text-xs font-medium transition">เฉพาะบาลี</button>
+            <button onclick="setLanguageMode('thai')" id="home-lang-thai"
+              class="px-3 py-1.5 rounded-lg text-xs font-medium transition">เฉพาะแปลไทย</button>
+          </div>
+        </div>
+
+        <!-- Category Filter Chips -->
+        <div id="category-chips" class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- Saved Playlists Section -->
+      <section id="saved-playlists-section" class="mb-6"></section>
+
+      <!-- Selected Chanting Queue Bar (if user selects multiple chants) -->
+      <div id="queue-bar" class="hidden mb-6 p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--accent)]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      </div>
+
+      <!-- Chants List (Table of Contents) -->
+      <div id="chant-list-container" class="space-y-3">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Footer -->
+      <footer class="mt-14 pt-6 border-t border-[var(--border-color)] text-center text-xs text-[var(--text-muted)] space-y-1">
+        <p>หนังสือสวดมนต์ดิจิทัลเพื่อความสงบแห่งจิตใจ • แตะที่หน้าจอขณะสวดมนต์เพื่อเปิดหรือซ่อนแถบควบคุม</p>
+        <p>รองรับระบบโมดูลเสริมแยกไฟล์ (Modular Plugin System) และซิงก์ข้อมูลข้ามเครื่องผ่านไฟล์ <code>chants-data.js</code></p>
+      </footer>
+    </main>
+  </div>
+
+
+  <!-- =========================================================
+       VIEW 2: CHANTING MODE (โหมดสวดมนต์ - Zero Distraction + HUD)
+       ========================================================= -->
+  <div id="chanting-view" class="hidden min-h-screen flex flex-col relative select-none">
+
+    <!-- FLOATING TOP HUD BAR (Fades out during chanting) -->
+    <div id="hud-top" onclick="event.stopPropagation()"
+      class="hud-element fixed top-0 left-0 right-0 z-40 px-4 py-3 pointer-events-auto">
+      <div class="max-w-4xl mx-auto rounded-2xl px-4 py-2.5 backdrop-blur-md bg-[var(--hud-bg)] text-[var(--hud-text)] border border-[var(--hud-border)] shadow-lg flex items-center justify-between gap-3 transition-all duration-200">
+        
+        <!-- Back to Index Button & Current Chant Title -->
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="exitChantingMode()"
+            class="p-2 rounded-xl hover:bg-black/10 transition flex items-center gap-1.5 text-xs sm:text-sm font-medium shrink-0"
+            title="กลับหน้าสารบัญ (Esc)">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+            <span class="hidden sm:inline">สารบัญ</span>
+          </button>
+
+          <div class="h-4 w-[1px] bg-current opacity-20 shrink-0"></div>
+
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <span id="hud-queue-indicator" class="text-[11px] px-2 py-0.5 rounded-md bg-black/15 font-semibold shrink-0">บทที่ 1/1</span>
+              <h2 id="hud-chant-title" class="font-serif-thai text-sm sm:text-base font-semibold truncate">บทบูชาพระรัตนตรัย</h2>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Quick Controls in Top HUD: Previous/Next Chant in Queue & Pin HUD -->
+        <div class="flex items-center gap-1.5 shrink-0" id="hud-top-right-actions">
+          <button onclick="prevChantInQueue()" id="hud-prev-chant-btn"
+            class="p-2 rounded-xl hover:bg-black/10 disabled:opacity-30 disabled:pointer-events-none transition"
+            title="บทก่อนหน้า">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/>
+            </svg>
+          </button>
+          <button onclick="nextChantInQueue()" id="hud-next-chant-btn"
+            class="p-2 rounded-xl hover:bg-black/10 disabled:opacity-30 disabled:pointer-events-none transition"
+            title="บทถัดไป">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/>
+            </svg>
+          </button>
+
+          <div class="h-4 w-[1px] bg-current opacity-20 mx-1"></div>
+
+          <!-- Toggle Pin HUD (keep controls visible or auto-hide) -->
+          <button onclick="togglePinHud()" id="hud-pin-btn"
+            class="px-2.5 py-1.5 rounded-xl text-xs hover:bg-black/10 transition flex items-center gap-1"
+            title="ล็อกแถบควบคุมไม่ให้ซ่อนอัตโนมัติ">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="17" x2="12" y2="22"/>
+              <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/>
+            </svg>
+            <span class="hidden md:inline" id="hud-pin-label">ซ่อนอัตโนมัติ</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PURE CHANTING CANVAS (ONLY TEXT IS SHOWN WHEN HUD FADES) -->
+    <div id="chant-stage" onclick="handleStageTap(event)" class="flex-1 flex flex-col justify-between w-full mx-auto px-3 sm:px-6">
+      
+      <!-- 1. CONTINUOUS SCROLL MODE CONTAINER -->
+      <div id="scroll-mode-container" class="w-full pt-16 pb-20">
+        <div id="scroll-content-area" class="space-y-4">
+          <!-- Populated dynamically with clean chanting text -->
+        </div>
+      </div>
+
+      <!-- 2. BOOK PAGE-BY-PAGE MODE CONTAINER -->
+      <div id="page-mode-container" class="hidden min-h-screen w-full flex flex-col justify-center py-20 relative">
+        
+        <!-- Subtle Left/Right Tap Zones for turning pages easily like an e-Reader -->
+        <div onclick="handlePageTapZone(event, 'prev')" title="หน้าก่อนหน้า"
+          class="fixed left-0 top-20 bottom-28 w-12 sm:w-20 z-20 cursor-pointer flex items-center justify-center group">
+          <div class="w-8 h-14 rounded-r-xl bg-[var(--accent-soft)]/0 group-hover:bg-[var(--accent-soft)]/70 text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+            ‹
+          </div>
+        </div>
+        <div onclick="handlePageTapZone(event, 'next')" title="หน้าถัดไป"
+          class="fixed right-0 top-20 bottom-28 w-12 sm:w-20 z-20 cursor-pointer flex items-center justify-center group">
+          <div class="w-8 h-14 rounded-l-xl bg-[var(--accent-soft)]/0 group-hover:bg-[var(--accent-soft)]/70 text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+            ›
+          </div>
+        </div>
+
+        <!-- Book Page Sheet -->
+        <div id="page-content-area" class="my-auto py-6">
+          <!-- Populated dynamically with the current page's stanzas -->
+        </div>
+
+        <!-- Minimal Subtle Page Number Watermark at very bottom -->
+        <div class="fixed bottom-3 left-1/2 -translate-x-1/2 text-xs text-[var(--text-muted)]/60 font-serif-thai pointer-events-none">
+          <span id="minimal-page-indicator"></span>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- FLOATING YOUTUBE-STYLE BOTTOM PLAYER HUD -->
+    <div id="hud-bottom" onclick="event.stopPropagation()"
+      class="hud-element fixed bottom-0 left-0 right-0 z-40 px-3 sm:px-6 pb-4 pt-2 pointer-events-auto">
+      
+      <div class="max-w-4xl mx-auto relative">
+
+        <!-- POPOVER 1: LANGUAGE & PALI SCRIPT SETTINGS (ท่อนบาลี/ไทย & พินทุ/ยามักการ) -->
+        <div id="hud-popover-lang"
+          class="hidden absolute bottom-full left-0 sm:left-auto sm:right-24 mb-3 w-full sm:w-80 rounded-2xl p-4 backdrop-blur-xl bg-[#262320]/95 text-[#F7F4EB] border border-white/15 shadow-2xl space-y-4">
+          <div class="flex items-center justify-between border-b border-white/10 pb-2">
+            <span class="text-xs font-semibold tracking-wider uppercase text-[#D9C39E]">ตั้งค่าภาษาและอักษรบาลี</span>
+            <button onclick="closeHudPopovers()" class="text-white/60 hover:text-white text-sm">✕</button>
+          </div>
+
+          <!-- Toggle Pali / Thai / Both -->
+          <div class="space-y-1.5">
+            <label class="text-xs text-white/75 block">การแสดงเนื้อหาบทสวด</label>
+            <div class="grid grid-cols-3 gap-1.5 bg-black/25 p-1 rounded-xl">
+              <button onclick="setLanguageMode('both')" id="hud-lang-both"
+                class="py-2 px-2 rounded-lg text-xs font-medium transition">บาลี + แปล</button>
+              <button onclick="setLanguageMode('pali')" id="hud-lang-pali"
+                class="py-2 px-2 rounded-lg text-xs font-medium transition">เฉพาะบาลี</button>
+              <button onclick="setLanguageMode('thai')" id="hud-lang-thai"
+                class="py-2 px-2 rounded-lg text-xs font-medium transition">เฉพาะแปลไทย</button>
+            </div>
+          </div>
+
+          <!-- Toggle Pali Script Type -->
+          <div class="space-y-1.5">
+            <label class="text-xs text-white/75 block">รูปแบบการสะกดภาษาบาลี</label>
+            <div class="space-y-2">
+              <button onclick="setPaliScript('thai')" id="hud-script-thai"
+                class="w-full text-left p-2.5 rounded-xl border border-white/15 hover:bg-white/5 transition flex items-start justify-between gap-2">
+                <div>
+                  <div class="text-xs font-semibold text-[#F7F4EB]">บาลีสะกดแบบไทย (สระอะ / ยามักการ)</div>
+                  <div class="text-[11px] text-white/65 mt-0.5 font-serif-thai">เช่น อะระหัง สัมมาสัมพุทโธ, ส๎วากขาโต</div>
+                </div>
+                <span id="check-script-thai" class="text-[#D9C39E] text-sm">✓</span>
+              </button>
+
+              <button onclick="setPaliScript('phinthu')" id="hud-script-phinthu"
+                class="w-full text-left p-2.5 rounded-xl border border-white/15 hover:bg-white/5 transition flex items-start justify-between gap-2">
+                <div>
+                  <div class="text-xs font-semibold text-[#F7F4EB]">บาลีอักษรไทย (พินทุ - นิคหิต)</div>
+                  <div class="text-[11px] text-white/65 mt-0.5 font-serif-thai">เช่น อรหํ สมฺมาสมฺพุทฺโธ, สฺวากฺขาโต</div>
+                </div>
+                <span id="check-script-phinthu" class="text-[#D9C39E] text-sm hidden">✓</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- POPOVER 2: APPEARANCE, TYPOGRAPHY & EYE CARE (ปรับขนาดตัวอักษร, สเกล & ความใส UI) -->
+        <div id="hud-popover-appearance"
+          class="hidden absolute bottom-full right-0 mb-3 w-full sm:w-80 max-h-[80vh] overflow-y-auto rounded-2xl p-4 backdrop-blur-xl bg-[#262320]/95 text-[#F7F4EB] border border-white/15 shadow-2xl space-y-3.5">
+          <div class="flex items-center justify-between border-b border-white/10 pb-2">
+            <span class="text-xs font-semibold tracking-wider uppercase text-[#D9C39E]">ตัวอักษร, สเกล & ความใส UI</span>
+            <button onclick="closeHudPopovers()" class="text-white/60 hover:text-white text-sm">✕</button>
+          </div>
+
+          <!-- Font Size Adjuster (18 - 100px) -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs text-white/75">
+              <span>ขนาดตัวอักษร</span>
+              <span id="hud-fontsize-label">28 px</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="adjustFontSize(-2)" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold transition">A-</button>
+              <input type="range" min="18" max="100" step="2" value="28" id="hud-fontsize-slider"
+                oninput="setFontSize(this.value)" class="zen-slider flex-1" />
+              <button onclick="adjustFontSize(2)" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-sm font-semibold transition">A+</button>
+            </div>
+          </div>
+
+          <!-- Scale Controls: Horizontal Text Width, Container Width, Line Height -->
+          <div class="space-y-2.5 pt-2 border-t border-white/10">
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs text-white/75">
+                <span>ความกว้างตัวอักษร (บีบให้จุคำต่อบรรทัดมากขึ้น)</span>
+                <span id="hud-scalex-label">92%</span>
+              </div>
+              <input type="range" min="70" max="110" step="2" value="92" id="hud-scalex-slider"
+                oninput="setFontScaleX(this.value)" class="zen-slider w-full" />
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs text-white/75">
+                <span>ความกว้างพื้นที่บทสวด</span>
+                <span id="hud-width-label">96%</span>
+              </div>
+              <input type="range" min="60" max="100" step="2" value="96" id="hud-width-slider"
+                oninput="setContainerWidth(this.value)" class="zen-slider w-full" />
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs text-white/75">
+                <span>ระยะห่างบรรทัด (ความกระชับแนวตั้ง)</span>
+                <span id="hud-lh-label">1.45</span>
+              </div>
+              <input type="range" min="1.15" max="2.20" step="0.05" value="1.45" id="hud-lh-slider"
+                oninput="setLineHeight(this.value)" class="zen-slider w-full" />
+            </div>
+          </div>
+
+          <!-- Font Family & Alignment -->
+          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">
+            <div class="bg-black/25 p-1 rounded-xl grid grid-cols-2 gap-1">
+              <button onclick="setFontFamily('serif')" id="hud-font-serif" class="py-1.5 rounded-lg text-xs font-serif-thai transition">มีหัว (Serif)</button>
+              <button onclick="setFontFamily('sans')" id="hud-font-sans" class="py-1.5 rounded-lg text-xs font-sans-thai transition">สบายตา</button>
+            </div>
+            <div class="bg-black/25 p-1 rounded-xl grid grid-cols-2 gap-1">
+              <button onclick="setTextAlign('center')" id="hud-align-center" class="py-1.5 rounded-lg text-xs transition">กึ่งกลาง</button>
+              <button onclick="setTextAlign('left')" id="hud-align-left" class="py-1.5 rounded-lg text-xs transition">ชิดซ้าย</button>
+            </div>
+          </div>
+
+          <!-- HUD Transparency & Glass Style -->
+          <div class="space-y-2 pt-2 border-t border-white/10">
+            <label class="text-xs text-white/75 block">สไตล์แถบควบคุมโปร่งแสง (เห็นบทสวดด้านหลัง)</label>
+            <div class="grid grid-cols-3 gap-1 bg-black/25 p-1 rounded-xl">
+              <button onclick="setHudStyle('light-glass')" id="hud-style-light-glass" class="py-1.5 px-2 rounded-lg text-[11px] transition">กระจกสีอ่อน</button>
+              <button onclick="setHudStyle('dark-glass')" id="hud-style-dark-glass" class="py-1.5 px-2 rounded-lg text-[11px] transition">กระจกสีเข้ม</button>
+              <button onclick="setHudStyle('ghost')" id="hud-style-ghost" class="py-1.5 px-2 rounded-lg text-[11px] transition">ไร้กรอบ</button>
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs text-white/75">
+                <span>ความทึบแถบควบคุม (ยิ่งน้อยยิ่งใส)</span>
+                <span id="hud-opacity-label">35%</span>
+              </div>
+              <input type="range" min="10" max="95" step="5" value="35" id="hud-opacity-slider"
+                oninput="setHudOpacity(this.value)" class="zen-slider w-full" />
+            </div>
+          </div>
+
+          <!-- Eye Care Theme in HUD -->
+          <div class="space-y-1.5 pt-2 border-t border-white/10">
+            <label class="text-xs text-white/75 block">โหมดสีพื้นหลังถนอมสายตา</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="setTheme('natural')" id="hud-theme-natural"
+                class="py-1.5 px-2 rounded-xl border border-white/15 bg-[#F7F4EB] text-[#2C2A29] text-xs font-medium text-center">
+                ธรรมชาติ
+              </button>
+              <button onclick="setTheme('sepia')" id="hud-theme-sepia"
+                class="py-1.5 px-2 rounded-xl border border-white/15 bg-[#F2E6CE] text-[#3B2F2F] text-xs font-medium text-center">
+                ซีเปียอุ่น
+              </button>
+              <button onclick="setTheme('dark')" id="hud-theme-dark"
+                class="py-1.5 px-2 rounded-xl border border-white/15 bg-[#181715] text-[#D8D2C5] text-xs font-medium text-center">
+                กลางคืน
+              </button>
+            </div>
+          </div>
+
+          <!-- Blue Light Filter Warmth Slider -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs text-white/75">
+              <span>กรองแสงสีฟ้า (ความอุ่นจอ)</span>
+              <span id="hud-warmth-val">0%</span>
+            </div>
+            <input type="range" min="0" max="55" value="0" id="hud-warmth-slider"
+              oninput="setWarmthFilter(this.value)" class="zen-slider w-full" />
+          </div>
+
+          <!-- Focus Line Guide Toggle -->
+          <div class="flex items-center justify-between pt-1 border-t border-white/10">
+            <span class="text-xs text-white/75">เส้นนำสายตาขณะเลื่อนอ่าน</span>
+            <button onclick="toggleFocusGuide()" id="hud-focus-btn"
+              class="px-3 py-1 rounded-lg bg-white/10 text-xs text-white/80 hover:bg-white/20 transition">
+              ปิดอยู่
+            </button>
+          </div>
+        </div>
+
+
+        <!-- MAIN YOUTUBE-STYLE PLAYER BAR -->
+        <div id="hud-bottom-box" class="rounded-2xl px-4 pt-2.5 pb-3 backdrop-blur-md bg-[var(--hud-bg)] text-[var(--hud-text)] border border-[var(--hud-border)] shadow-2xl transition-all duration-200">
+          
+          <!-- Top Row: Interactive Timeline Scrubber Bar -->
+          <div class="flex items-center gap-3 mb-2">
+            <span id="hud-progress-left" class="text-[11px] font-mono opacity-80 shrink-0 min-w-[42px]">0%</span>
+            
+            <div id="timeline-scrubber" class="timeline-container flex-1"
+              onmousedown="startTimelineScrub(event)"
+              ontouchstart="startTimelineScrub(event)">
+              <div class="timeline-track">
+                <div id="timeline-fill" class="timeline-fill" style="width: 0%;">
+                  <div class="timeline-thumb"></div>
+                </div>
+              </div>
+            </div>
+
+            <span id="hud-progress-right" class="text-[11px] opacity-80 shrink-0 min-w-[64px] text-right">วรรค 1/5</span>
+          </div>
+
+          <!-- Bottom Row: Player Controls -->
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            
+            <!-- Left Group: Play/Pause Auto-Scroll & Speed Control -->
+            <div class="flex items-center gap-2">
+              <!-- Play / Pause Button -->
+              <button onclick="toggleAutoScroll()" id="play-pause-btn"
+                class="w-10 h-10 rounded-xl bg-[#D9C39E] hover:bg-[#E5D3B3] text-[#262320] flex items-center justify-center transition shadow-sm shrink-0"
+                title="เล่น / หยุดเลื่อนอัตโนมัติ (Spacebar)">
+                <svg id="icon-play" class="w-5 h-5 ml-0.5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg id="icon-pause" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+              </button>
+
+              <!-- Speed Slider & Badge -->
+              <div class="flex items-center gap-1.5 bg-black/15 rounded-xl px-2.5 py-1.5">
+                <button onclick="adjustScrollSpeed(-0.25)" class="opacity-80 hover:opacity-100 text-xs px-1 font-bold" title="ลดความเร็ว">−</button>
+                <div class="flex flex-col items-center min-w-[54px]">
+                  <span class="text-[10px] opacity-70 leading-none">ความเร็วเลื่อน</span>
+                  <span id="speed-label" class="text-xs font-semibold leading-tight mt-0.5">1.0x</span>
+                </div>
+                <input type="range" min="0.25" max="4.0" step="0.25" value="1.0" id="speed-slider"
+                  oninput="setScrollSpeed(this.value)"
+                  class="zen-slider w-16 sm:w-20 hidden sm:block" />
+                <button onclick="adjustScrollSpeed(0.25)" class="opacity-80 hover:opacity-100 text-xs px-1 font-bold" title="เพิ่มความเร็ว">+</button>
+              </div>
+            </div>
+
+            <!-- Center Group: Reading Mode Switcher & Page Turners -->
+            <div class="flex items-center gap-1.5">
+              <div class="flex items-center bg-black/15 p-1 rounded-xl border border-current/10">
+                <button onclick="setReadingMode('scroll')" id="mode-btn-scroll"
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1"
+                  title="โหมดเลื่อนอ่านต่อเนื่อง">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 3v18"/><path d="m8 7 4-4 4 4"/><path d="m8 17 4 4 4-4"/>
+                  </svg>
+                  <span>เลื่อนอ่าน</span>
+                </button>
+                <button onclick="setReadingMode('page')" id="mode-btn-page"
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1"
+                  title="โหมดเปิดอ่านทีละหน้าแบบหนังสือ">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                  </svg>
+                  <span>เปิดเป็นหน้า</span>
+                </button>
+              </div>
+
+              <!-- Page Navigation Buttons (Shown when in Page mode) -->
+              <div id="hud-page-nav" class="hidden flex items-center gap-1 bg-black/15 rounded-xl p-1">
+                <button onclick="changePage(-1)" id="prev-page-btn"
+                  class="px-2 py-1 rounded-lg hover:bg-black/10 disabled:opacity-30 text-xs font-medium transition">
+                  ‹ ก่อนหน้า
+                </button>
+                <span id="hud-page-badge" class="text-xs px-2 font-semibold">1/1</span>
+                <button onclick="changePage(1)" id="next-page-btn"
+                  class="px-2 py-1 rounded-lg hover:bg-black/10 disabled:opacity-30 text-xs font-medium transition">
+                  ถัดไป ›
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Group: Language/Script Popover & Eye-Care/Font Popover -->
+            <div class="flex items-center gap-1.5" id="hud-bottom-right-actions">
+              <button onclick="toggleHudPopover('lang')" id="hud-btn-lang"
+                class="px-3 py-2 rounded-xl bg-black/15 hover:bg-black/25 text-xs font-medium transition flex items-center gap-1.5"
+                title="เลือกภาษา บาลี/ไทย และรูปแบบอักษรพินทุ/ยามักการ">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>
+                </svg>
+                <span id="hud-lang-summary">บาลี+ไทย</span>
+              </button>
+
+              <button onclick="toggleHudPopover('appearance')" id="hud-btn-appearance"
+                class="px-3 py-2 rounded-xl bg-black/15 hover:bg-black/25 text-xs font-medium transition flex items-center gap-1.5"
+                title="ปรับขนาดตัวอักษร สเกล และความใส UI">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                <span class="hidden sm:inline">ตั้งค่าจอ</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       VIEW 3: ADMIN MANAGEMENT DASHBOARD (ระบบผู้ดูแล)
+       ========================================================= -->
+  <div id="admin-view" class="hidden min-h-screen flex flex-col bg-[var(--bg-primary)]">
+    
+    <!-- Admin Header -->
+    <header class="sticky top-0 z-30 backdrop-blur-md bg-[var(--bg-primary)]/95 border-b border-[var(--border-color)]">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 min-h-16 py-2 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <button onclick="closeAdminView()"
+            class="px-3 py-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-xs sm:text-sm font-medium hover:border-[var(--accent)] transition flex items-center gap-1.5">
+            ‹ กลับหน้าหนังสือสวดมนต์
+          </button>
+          <h2 class="font-serif-thai text-base sm:text-lg font-semibold text-[var(--text-primary)]">
+            ระบบผู้ดูแล (Karn)
+          </h2>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button onclick="openModuleManagerModal()"
+            class="px-3 py-1.5 rounded-xl border border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)] text-xs font-semibold hover:opacity-90 transition">
+            🧩 โมดูลเสริม (Plugins)
+          </button>
+          <button onclick="saveSharedDatabaseFile()"
+            class="px-3 py-1.5 rounded-xl bg-[var(--accent)] text-[#FAF8F2] text-xs font-medium hover:opacity-90 transition">
+            💾 บันทึกแชร์ข้ามเครื่อง (chants-data.js)
+          </button>
+          <button onclick="exportChantsJson()"
+            class="px-3 py-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-xs font-medium hover:border-[var(--accent)] transition">
+            ส่งออก JSON
+          </button>
+          <label class="px-3 py-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-xs font-medium hover:border-[var(--accent)] transition cursor-pointer">
+            นำเข้า JSON (+สแต็ก)
+            <input type="file" accept=".json" onchange="importChantsJson(event)" class="hidden" />
+          </label>
+          <button onclick="confirmClearAllChants()"
+            class="px-3 py-1.5 rounded-xl border border-red-400/40 text-red-700 bg-red-500/5 text-xs font-medium hover:bg-red-500/10 transition">
+            🗑️ ล้างทั้งหมด
+          </button>
+          <button onclick="logoutAdmin()"
+            class="px-3 py-1.5 rounded-xl bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-xs font-medium hover:text-[var(--text-primary)] transition">
+            ล็อกเอาต์
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Admin Main Content -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Left Column: List of Chants & Reordering -->
+      <div class="lg:col-span-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-serif-thai text-base font-semibold">รายการบทสวดมนต์ทั้งหมด (<span id="admin-total-count">0</span>)</h3>
+          <button onclick="createNewChantInEditor()"
+            class="px-3.5 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[#FAF8F2] text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
+            <span>+ เพิ่มบทสวดใหม่</span>
+          </button>
+        </div>
+
+        <div id="admin-chant-list" class="space-y-2.5 max-h-[72vh] overflow-y-auto pr-1">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Right Column: Chant & Stanza Editor -->
+      <div class="lg:col-span-7">
+        <div id="admin-editor-panel" class="zen-card rounded-2xl p-5 sm:p-6 space-y-5">
+          <div class="flex items-center justify-between border-b border-[var(--border-color)] pb-4">
+            <div>
+              <span id="editor-mode-badge" class="text-[11px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] font-semibold">แก้ไขบทสวด</span>
+              <h3 id="editor-header-title" class="font-serif-thai text-xl font-semibold mt-1">รายละเอียดบทสวดมนต์</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="saveCurrentEditedChant()"
+                class="px-4 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[#FAF8F2] text-xs sm:text-sm font-medium transition shadow-sm">
+                บันทึกบทสวดนี้
+              </button>
+            </div>
+          </div>
+
+          <!-- Metadata Inputs -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">ชื่อบทสวดมนต์ *</label>
+              <input type="text" id="edit-chant-title" placeholder="เช่น บทบูชาพระรัตนตรัย"
+                class="w-full px-3.5 py-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm focus:outline-none focus:border-[var(--accent)]" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">หมวดหมู่ *</label>
+              <input type="text" id="edit-chant-category" list="category-suggestions" placeholder="เช่น ภาค ๑ คำทำวัตรเช้า"
+                class="w-full px-3.5 py-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm focus:outline-none focus:border-[var(--accent)]" />
+              <datalist id="category-suggestions">
+                <option value="ภาค ๑ คำทำวัตรเช้า"></option>
+                <option value="ภาค ๒ คำทำวัตรเย็น"></option>
+                <option value="ภาค ๓ บทสวดมนต์พิเศษ"></option>
+                <option value="ภาค ๔ คาถาให้พรและอนุโมทนา"></option>
+                <option value="ภาค ๕ พระปริตร"></option>
+                <option value="ภาค ๖ พระสูตร"></option>
+              </datalist>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--text-secondary)] mb-1">คำอธิบายย่อ / คำแนะนำก่อนสวด</label>
+            <input type="text" id="edit-chant-subtitle" placeholder="เช่น หนังสือทำวัตรสวดมนต์ วัดสวนธรรมพุทธรังสี"
+              class="w-full px-3.5 py-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+
+          <!-- Special Pali Characters Helper Toolbar -->
+          <div class="p-3.5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-color)] space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-medium text-[var(--text-secondary)]">
+                ปุ่มแทรกอักขระพิเศษบาลี (คลิกช่องข้อความที่ต้องการ แล้วกดปุ่มเพื่อแทรกทันที):
+              </span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onmousedown="event.preventDefault(); insertSpecialChar('\u0E3A')"
+                class="px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-[var(--accent)] text-xs font-medium transition">
+                แทรก พินทุ ( ฺ )
+              </button>
+              <button type="button" onmousedown="event.preventDefault(); insertSpecialChar('\u0E4D')"
+                class="px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-[var(--accent)] text-xs font-medium transition">
+                แทรก นิคหิต ( ํ )
+              </button>
+              <button type="button" onmousedown="event.preventDefault(); insertSpecialChar('\u0E4E')"
+                class="px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-[var(--accent)] text-xs font-medium transition">
+                แทรก ยามักการ ( ๎ )
+              </button>
+              <button type="button" onmousedown="event.preventDefault(); insertSpecialChar('ฯ')"
+                class="px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-[var(--accent)] text-xs font-medium transition">
+                แทรก ไปยาลน้อย ( ฯ )
+              </button>
+            </div>
+          </div>
+
+          <!-- Stanzas List in Editor -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                วรรค / ท่อนบทสวดมนต์ (แสดงและแบ่งหน้าตามวรรค)
+              </label>
+              <button type="button" onclick="addStanzaInEditor()"
+                class="px-3 py-1.5 rounded-lg border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-soft)] text-xs font-medium transition">
+                + เพิ่มท่อน/วรรคใหม่
+              </button>
+            </div>
+
+            <div id="editor-stanzas-container" class="space-y-4">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Bottom Save Bar -->
+          <div class="pt-4 border-t border-[var(--border-color)] flex items-center justify-between">
+            <button type="button" onclick="addStanzaInEditor()"
+              class="px-3.5 py-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)] text-xs font-medium hover:border-[var(--accent)] transition">
+              + เพิ่มวรรคต่อท้าย
+            </button>
+            <button type="button" onclick="saveCurrentEditedChant()"
+              class="px-5 py-2.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[#FAF8F2] text-sm font-medium transition shadow-sm">
+              บันทึกการเปลี่ยนแปลงทั้งหมด
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+
+  <!-- =========================================================
+       MODAL 1: ADMIN PASSWORD DIALOG (รหัสผ่าน: Karn)
+       ========================================================= -->
+  <div id="admin-login-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div onclick="event.stopPropagation()" class="w-full max-w-sm rounded-2xl p-6 bg-[var(--bg-card)] border border-[var(--border-color)] shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <h3 class="font-serif-thai text-lg font-semibold">เข้าสู่โหมดผู้ดูแลระบบ</h3>
+        </div>
+        <button onclick="closeAdminLoginModal()" class="text-[var(--text-muted)] hover:text-[var(--text-primary)]">✕</button>
+      </div>
+
+      <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+        กรุณากรอกรหัสผ่านผู้ดูแลเพื่อเพิ่ม ลบ แก้ไขบทสวดมนต์ หรือจัดการโมดูลเสริม
+      </p>
+
+      <form onsubmit="submitAdminPassword(event)" class="space-y-3">
+        <div>
+          <input type="password" id="admin-password-input" placeholder="กรอกรหัสผ่านผู้ดูแล..."
+            class="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-sm focus:outline-none focus:border-[var(--accent)]" />
+          <p id="admin-password-error" class="hidden text-xs text-red-600 mt-1.5">รหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง</p>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" onclick="closeAdminLoginModal()"
+            class="px-4 py-2 rounded-xl text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition">
+            ยกเลิก
+          </button>
+          <button type="submit"
+            class="px-5 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[#FAF8F2] text-xs font-medium transition">
+            เข้าสู่ระบบ
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- =========================================================
+       MODAL 2: CUSTOM CONFIRMATION DIALOG
+       ========================================================= -->
+  <div id="custom-confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div onclick="event.stopPropagation()" class="w-full max-w-sm rounded-2xl p-6 bg-[var(--bg-card)] border border-[var(--border-color)] shadow-2xl space-y-4">
+      <h3 id="confirm-modal-title" class="font-serif-thai text-lg font-semibold text-[var(--text-primary)]">ยืนยันการทำรายการ</h3>
+      <p id="confirm-modal-message" class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed"></p>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button onclick="closeCustomConfirm()"
+          class="px-4 py-2 rounded-xl text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition">
+          ยกเลิก
+        </button>
+        <button id="confirm-modal-ok-btn"
+          class="px-4 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-medium transition">
+          ยืนยัน
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================================================
+       MODAL 3: MODULAR PLUGIN MANAGER (ระบบจัดการโมดูลเสริมแยกไฟล์)
+       ========================================================= -->
+  <div id="module-manager-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div onclick="event.stopPropagation()" class="w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl p-6 bg-[var(--bg-card)] border border-[var(--border-color)] shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+        <div>
+          <span class="text-[11px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] font-semibold">Modular Architecture</span>
+          <h3 class="font-serif-thai text-xl font-semibold mt-1">ระบบจัดการโมดูลเสริม (Plugins & External Modules)</h3>
+        </div>
+        <button onclick="closeModuleManagerModal()" class="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-lg">✕</button>
+      </div>
+
+      <!-- How it works explanation -->
+      <div class="p-3.5 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-color)] text-xs text-[var(--text-secondary)] space-y-1.5 leading-relaxed">
+        <p class="font-semibold text-[var(--text-primary)]">วิธีเพิ่มฟีเจอร์ใหม่โดยไม่ต้องแก้ไฟล์ <code>index.html</code> อีกต่อไป:</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><strong>วิธีที่ 1 (วางไฟล์แยกในโฟลเดอร์):</strong> ตั้งชื่อไฟล์สคริปต์ใหม่ว่า <code>module-1.js</code> ถึง <code>module-10.js</code> แล้ววางในโฟลเดอร์เดียวกับ <code>index.html</code> ระบบจะดึงมาทำงานอัตโนมัติทันที หรือเพิ่มชื่อไฟล์ <code>.js</code> อื่นๆ ในช่องด้านล่าง</li>
+          <li><strong>วิธีที่ 2 (วางโค้ดโมดูลในหน้านี้):</strong> นำโค้ดโมดูลที่ได้จาก AI มาวางสร้างเป็นปลั๊กอินด้านล่าง เปิด/ปิดได้ตามต้องการ และพอกดปุ่ม <strong>💾 บันทึกแชร์ข้ามเครื่อง (chants-data.js)</strong> โมดูลทั้งหมดจะตามไปทำงานในทุกเครื่องอัตโนมัติ</li>
+        </ul>
+      </div>
+
+      <!-- Section A: External .js file names in folder -->
+      <div class="space-y-2">
+        <label class="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          1. รายชื่อไฟล์โมดูลภายนอกในโฟลเดอร์เดียวกัน (นอกจาก module-1.js ถึง module-10.js ที่โหลดอัตโนมัติอยู่แล้ว)
+        </label>
+        <div class="flex gap-2">
+          <input type="text" id="new-external-module-file" placeholder="เช่น my-timer.js หรือ modules/highlight-red.js"
+            class="flex-1 px-3.5 py-2 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-xs sm:text-sm focus:outline-none focus:border-[var(--accent)]" />
+          <button onclick="addExternalModuleFile()"
+            class="px-4 py-2 rounded-xl bg-[var(--accent)] text-[#FAF8F2] text-xs font-medium hover:opacity-90 transition">
+            + เพิ่มไฟล์โมดูล
+          </button>
+        </div>
+        <div id="external-modules-list" class="space-y-1.5 pt-1"></div>
+      </div>
+
+      <!-- Section B: Inline / Imported Script Modules -->
+      <div class="space-y-3 pt-3 border-t border-[var(--border-color)]">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+            2. โมดูลโค้ดเสริมในระบบ (เปิด/ปิดได้ และซิงก์ไปกับ chants-data.js)
+          </label>
+          <label class="px-3 py-1 rounded-lg border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-soft)] text-xs font-medium cursor-pointer transition">
+            📂 อัปโหลดไฟล์ .js เข้ามาเก็บในระบบ
+            <input type="file" accept=".js,.txt" onchange="uploadInlineModuleFile(event)" class="hidden" />
+          </label>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] space-y-2.5">
+          <input type="text" id="inline-module-name" placeholder="ชื่อโมดูล (เช่น ไฮไลต์คำสีแดงตาม PowerPoint, นาฬิกาจับเวลาสวดมนต์)"
+            class="w-full px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-xs sm:text-sm focus:outline-none focus:border-[var(--accent)]" />
+          <textarea id="inline-module-code" rows="4" placeholder="// วางโค้ด JavaScript ของโมดูลที่ให้ AI เขียนให้ตรงนี้..."
+            class="w-full px-3 py-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] font-mono text-xs focus:outline-none focus:border-[var(--accent)]"></textarea>
+          <div class="flex justify-end">
+            <button onclick="saveInlineModule()"
+              class="px-4 py-1.5 rounded-xl bg-[var(--accent)] text-[#FAF8F2] text-xs font-medium hover:opacity-90 transition">
+              + บันทึกและรันโมดูลนี้ทันที
+            </button>
+          </div>
+        </div>
+
+        <div id="inline-modules-list" class="space-y-2"></div>
+      </div>
+
+      <div class="pt-3 border-t border-[var(--border-color)] flex justify-end">
+        <button onclick="closeModuleManagerModal()"
+          class="px-5 py-2 rounded-xl bg-[var(--bg-secondary)] text-[var(--text-primary)] text-xs font-medium hover:opacity-90 transition">
+          ปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================================================
+       JAVASCRIPT CORE ENGINE
+       ========================================================= -->
+  <script>
+    const DEFAULT_CHANTS = [
+      {
+        id: 'chant-1',
+        title: 'บทบูชาพระรัตนตรัย',
+        category: 'บทสวดพื้นฐาน',
+        subtitle: 'สวดเริ่มต้นเพื่อถวายเครื่องสักการะบูชาแด่พระพุทธ พระธรรม และพระสงฆ์',
+        stanzas: [
+          {
+            note: 'คำบูชาพระรัตนตรัย',
+            pali_phinthu: 'อิมินา สกฺกาเรน พุทฺธํ ปูเชมิ',
+            pali_thai: 'อิมินา สักกาเรนะ พุทธัง ปูเชมิ',
+            thai_translation: 'ด้วยเครื่องสักการะนี้ ข้าพเจ้าขอบูชาสมเด็จพระสัมมาสัมพุทธเจ้า'
+          },
+          {
+            note: '',
+            pali_phinthu: 'อิมินา สกฺกาเรน ธมฺมํ ปูเชมิ',
+            pali_thai: 'อิมินา สักกาเรนะ ธัมมัง ปูเชมิ',
+            thai_translation: 'ด้วยเครื่องสักการะนี้ ข้าพเจ้าขอบูชาพระธรรมอันประเสริฐ'
+          },
+          {
+            note: '',
+            pali_phinthu: 'อิมินา สกฺกาเรน สงฺฆํ ปูเชมิ',
+            pali_thai: 'อิมินา สักกาเรนะ สังฆัง ปูเชมิ',
+            thai_translation: 'ด้วยเครื่องสักการะนี้ ข้าพเจ้าขอบูชาพระอริยสงฆ์เจ้า'
+          }
+        ]
+      }
+    ];
+
+    const STORAGE_KEY_CHANTS    = 'zen_chant_book_data_v1';
+    const STORAGE_KEY_PREFS     = 'zen_chant_book_prefs_v1';
+    const STORAGE_KEY_PLAYLISTS = 'zen_chant_playlists_v1';
+    const STORAGE_KEY_MODULES   = 'zen_chant_modules_v1';
+
+    let chantsData = [];
+    let playlistsData = [];
+    let selectedCategory = 'ทั้งหมด';
+    let selectedQueueIds = [];
+
+    // User Reading, Scale & HUD Transparency Preferences
+    let prefs = {
+      theme: 'natural',          // 'natural' | 'sepia' | 'dark'
+      warmth: 0,                 // 0 to 55 (%)
+      readingMode: 'scroll',     // 'scroll' | 'page'
+      languageMode: 'both',      // 'both' | 'pali' | 'thai'
+      paliScript: 'thai',        // 'thai' | 'phinthu'
+      fontSize: 38,              // px (18 - 100)
+      fontScaleX: 92,            // % (70 - 110)
+      containerWidth: 96,        // % (60 - 100)
+      lineHeight: 1.45,          // 1.15 - 2.20
+      fontFamily: 'serif',       // 'serif' | 'sans'
+      textAlign: 'center',       // 'center' | 'left'
+      scrollSpeed: 1.0,          // 0.25x to 4.0x
+      focusGuide: false,
+      hudStyle: 'light-glass',   // 'light-glass' | 'dark-glass' | 'ghost'
+      hudOpacity: 35             // 10% to 95%
+    };
+
+    // Modular Plugin System State
+    let modulesConfig = {
+      externalFiles: [],         // e.g. ['my-feature.js']
+      inlineModules: []          // [{ id, name, code, enabled }]
+    };
+
+    // Chanting Session State
+    let activeSession = {
+      isChanting: false,
+      queueIds: [],
+      currentChantIndex: 0,
+      pages: [],
+      currentPageIndex: 0,
+      stanzasPerPage: 2,
+      isPlaying: false,
+      scrollAccumulator: 0,
+      rafId: null,
+      lastFrameTime: 0,
+      pageTimerAccum: 0,
+      hudVisible: true,
+      hudPinned: false,
+      hudTimeoutId: null,
+      activePopover: null
+    };
+
+    // Admin State
+    let adminState = {
+      isAuthenticated: false,
+      editingChantId: null,
+      editingStanzas: [],
+      lastFocusedInput: null
+    };
+
+    // =========================================================
+    // GLOBAL PLUGIN / MODULE API (สำหรับโมดูลแยกไฟล์เรียกใช้งาน)
+    // =========================================================
+    window.ZenChantApp = {
+      version: '2.0-modular',
+      hooks: {
+        onInit: [],
+        onEnterChanting: [],
+        onExitChanting: [],
+        onRenderChant: [],
+        transformStanzaHTML: []
+      },
+      registerModule: function(moduleDef) {
+        if (!moduleDef) return;
+        console.log('[ZenChantApp] Loaded Module:', moduleDef.name || 'Unnamed Module');
+        if (typeof moduleDef.onInit === 'function') this.hooks.onInit.push(moduleDef.onInit);
+        if (typeof moduleDef.onEnterChanting === 'function') this.hooks.onEnterChanting.push(moduleDef.onEnterChanting);
+        if (typeof moduleDef.onExitChanting === 'function') this.hooks.onExitChanting.push(moduleDef.onExitChanting);
+        if (typeof moduleDef.onRenderChant === 'function') this.hooks.onRenderChant.push(moduleDef.onRenderChant);
+        if (typeof moduleDef.transformStanzaHTML === 'function') this.hooks.transformStanzaHTML.push(moduleDef.transformStanzaHTML);
+        if (typeof moduleDef.init === 'function') {
+          try { moduleDef.init(this); } catch (e) { console.error(e); }
+        }
+      },
+      getChants: () => chantsData,
+      getPlaylists: () => playlistsData,
+      getPrefs: () => prefs,
+      getSession: () => activeSession,
+      savePrefs: () => savePrefsToStorage(),
+      saveChants: () => saveChantsToStorage(),
+      reRender: () => {
+        renderCategories();
+        renderHomeChantList();
+        if (activeSession.isChanting) renderChantingContent(false);
+      },
+      showToast: (msg) => showToast(msg),
+      addTopHudButton: function(htmlOrEl) {
+        const container = document.getElementById('hud-top-right-actions');
+        if (!container) return;
+        if (typeof htmlOrEl === 'string') {
+          container.insertAdjacentHTML('afterbegin', htmlOrEl);
+        } else if (htmlOrEl instanceof HTMLElement) {
+          container.prepend(htmlOrEl);
+        }
+      },
+      addBottomHudButton: function(htmlOrEl) {
+        const container = document.getElementById('hud-bottom-right-actions');
+        if (!container) return;
+        if (typeof htmlOrEl === 'string') {
+          container.insertAdjacentHTML('afterbegin', htmlOrEl);
+        } else if (htmlOrEl instanceof HTMLElement) {
+          container.prepend(htmlOrEl);
+        }
+      }
+    };
+
+    // ---------------------------------------------------------
+    // INITIALIZATION
+    // ---------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+      loadDataAndPrefs();
+      // Sync with shared chants-data.js if present in folder
+      if (window.SHARED_CHANTS && Array.isArray(window.SHARED_CHANTS) && window.SHARED_CHANTS.length > 0) {
+        chantsData = window.SHARED_CHANTS;
+        saveChantsToStorage();
+      }
+      if (window.SHARED_PLAYLISTS && Array.isArray(window.SHARED_PLAYLISTS)) {
+        playlistsData = window.SHARED_PLAYLISTS;
+        savePlaylists();
+      }
+      if (window.SHARED_MODULES && typeof window.SHARED_MODULES === 'object') {
+        modulesConfig = window.SHARED_MODULES;
+        saveModulesConfig();
+      }
+
+      applyAllPreferencesToUI();
+      renderCategories();
+      renderHomeChantList();
+      renderPlaylistsSection();
+      setupGlobalListeners();
+      loadAllRegisteredModules();
+    });
+
+    function loadDataAndPrefs() {
+      try {
+        const savedChants = localStorage.getItem(STORAGE_KEY_CHANTS);
+        if (savedChants) {
+          const parsed = JSON.parse(savedChants);
+          chantsData = (Array.isArray(parsed) && parsed.length > 0) ? parsed : JSON.parse(JSON.stringify(DEFAULT_CHANTS));
+        } else {
+          chantsData = JSON.parse(JSON.stringify(DEFAULT_CHANTS));
+        }
+      } catch (e) {
+        chantsData = JSON.parse(JSON.stringify(DEFAULT_CHANTS));
+      }
+
+      try {
+        const savedPrefs = localStorage.getItem(STORAGE_KEY_PREFS);
+        if (savedPrefs) prefs = { ...prefs, ...JSON.parse(savedPrefs) };
+      } catch (e) {}
+
+      try {
+        const savedPl = localStorage.getItem(STORAGE_KEY_PLAYLISTS);
+        if (savedPl) playlistsData = JSON.parse(savedPl);
+      } catch (e) { playlistsData = []; }
+
+      try {
+        const savedMod = localStorage.getItem(STORAGE_KEY_MODULES);
+        if (savedMod) modulesConfig = { ...modulesConfig, ...JSON.parse(savedMod) };
+      } catch (e) {}
+    }
+
+    function saveChantsToStorage() {
+      try { localStorage.setItem(STORAGE_KEY_CHANTS, JSON.stringify(chantsData)); } catch (e) {}
+    }
+    function savePrefsToStorage() {
+      try { localStorage.setItem(STORAGE_KEY_PREFS, JSON.stringify(prefs)); } catch (e) {}
+    }
+    function savePlaylists() {
+      try { localStorage.setItem(STORAGE_KEY_PLAYLISTS, JSON.stringify(playlistsData)); } catch (e) {}
+      renderPlaylistsSection();
+    }
+    function saveModulesConfig() {
+      try { localStorage.setItem(STORAGE_KEY_MODULES, JSON.stringify(modulesConfig)); } catch (e) {}
+    }
+
+    // ---------------------------------------------------------
+    // EYE-CARE, SCALE & HUD TRANSPARENCY ENGINE
+    // ---------------------------------------------------------
+    function setTheme(themeName) {
+      prefs.theme = themeName;
+      document.body.classList.remove('theme-sepia', 'theme-dark');
+      if (themeName === 'sepia') document.body.classList.add('theme-sepia');
+      if (themeName === 'dark') document.body.classList.add('theme-dark');
+
+      const themeLabels = {
+        natural: 'ถนอมสายตา (ธรรมชาติ)',
+        sepia: 'ซีเปียอุ่น',
+        dark: 'โหมดกลางคืน'
+      };
+      const labelEl = document.getElementById('current-theme-label');
+      if (labelEl) labelEl.textContent = themeLabels[themeName] || 'ถนอมสายตา';
+
+      ['natural', 'sepia', 'dark'].forEach(t => {
+        const homeBtn = document.getElementById(`theme-btn-${t}`);
+        const hudBtn  = document.getElementById(`hud-theme-${t}`);
+        if (homeBtn) homeBtn.style.outline = (t === themeName) ? '2px solid var(--accent)' : 'none';
+        if (hudBtn) hudBtn.style.outline = (t === themeName) ? '2px solid #D9C39E' : 'none';
+      });
+
+      applyHudTransparency();
+      savePrefsToStorage();
+    }
+
+    function setWarmthFilter(val) {
+      const numeric = parseInt(val, 10) || 0;
+      prefs.warmth = numeric;
+      const overlay = document.getElementById('warmth-overlay');
+      if (overlay) overlay.style.opacity = (numeric / 100).toFixed(2);
+
+      const homeSlider = document.getElementById('home-warmth-slider');
+      const hudSlider  = document.getElementById('hud-warmth-slider');
+      const homeVal    = document.getElementById('home-warmth-val');
+      const hudVal     = document.getElementById('hud-warmth-val');
+
+      if (homeSlider) homeSlider.value = numeric;
+      if (hudSlider) hudSlider.value = numeric;
+      if (homeVal) homeVal.textContent = `${numeric}%`;
+      if (hudVal) hudVal.textContent = `${numeric}%`;
+
+      savePrefsToStorage();
+    }
+
+    function setLanguageMode(mode) {
+      prefs.languageMode = mode;
+      savePrefsToStorage();
+      updateLanguageAndScriptButtonsUI();
+      if (activeSession.isChanting) renderChantingContent(false);
+    }
+
+    function setPaliScript(scriptType) {
+      prefs.paliScript = scriptType;
+      savePrefsToStorage();
+      updateLanguageAndScriptButtonsUI();
+      if (activeSession.isChanting) renderChantingContent(false);
+    }
+
+    function cyclePaliScript() {
+      const next = prefs.paliScript === 'thai' ? 'phinthu' : 'thai';
+      setPaliScript(next);
+      showToast(next === 'phinthu'
+        ? 'เปลี่ยนเป็น: บาลีอักษรไทย (พินทุ-นิคหิต)'
+        : 'เปลี่ยนเป็น: บาลีสะกดแบบไทย (สระอะ/ยามักการ)');
+    }
+
+    function updateLanguageAndScriptButtonsUI() {
+      const homeScriptLabel = document.getElementById('home-script-label');
+      if (homeScriptLabel) {
+        homeScriptLabel.textContent = prefs.paliScript === 'phinthu'
+          ? 'บาลี พินทุ-นิคหิต (สมฺมา)'
+          : 'บาลีสะกดไทย (สระอะ/ยามักการ)';
+      }
+
+      ['both', 'pali', 'thai'].forEach(m => {
+        const hBtn = document.getElementById(`home-lang-${m}`);
+        const cBtn = document.getElementById(`hud-lang-${m}`);
+        const isActive = prefs.languageMode === m;
+        if (hBtn) {
+          hBtn.className = isActive
+            ? 'px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--accent)] text-[#FAF8F2] transition shadow-sm'
+            : 'px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition';
+        }
+        if (cBtn) {
+          cBtn.className = isActive
+            ? 'py-2 px-2 rounded-lg text-xs font-semibold bg-[#D9C39E] text-[#262320] transition'
+            : 'py-2 px-2 rounded-lg text-xs font-medium text-white/75 hover:bg-white/10 transition';
+        }
+      });
+
+      const checkThai = document.getElementById('check-script-thai');
+      const checkPhinthu = document.getElementById('check-script-phinthu');
+      const btnThai = document.getElementById('hud-script-thai');
+      const btnPhinthu = document.getElementById('hud-script-phinthu');
+
+      if (checkThai) checkThai.classList.toggle('hidden', prefs.paliScript !== 'thai');
+      if (checkPhinthu) checkPhinthu.classList.toggle('hidden', prefs.paliScript !== 'phinthu');
+      if (btnThai) btnThai.style.borderColor = prefs.paliScript === 'thai' ? '#D9C39E' : 'rgba(255,255,255,0.15)';
+      if (btnPhinthu) btnPhinthu.style.borderColor = prefs.paliScript === 'phinthu' ? '#D9C39E' : 'rgba(255,255,255,0.15)';
+
+      const summaryEl = document.getElementById('hud-lang-summary');
+      if (summaryEl) {
+        const langMap = { both: 'บาลี+แปล', pali: 'เฉพาะบาลี', thai: 'เฉพาะไทย' };
+        const scriptShort = prefs.paliScript === 'phinthu' ? ' (พินทุ)' : ' (สะกดไทย)';
+        summaryEl.textContent = prefs.languageMode === 'thai'
+          ? 'เฉพาะแปลไทย'
+          : `${langMap[prefs.languageMode]}${scriptShort}`;
+      }
+    }
+
+    function setFontSize(sizePx) {
+      const clamped = Math.max(18, Math.min(100, parseInt(sizePx, 10) || 38));
+      prefs.fontSize = clamped;
+      const slider = document.getElementById('hud-fontsize-slider');
+      const label  = document.getElementById('hud-fontsize-label');
+      if (slider) slider.value = clamped;
+      if (label) label.textContent = `${clamped} px`;
+      savePrefsToStorage();
+      if (activeSession.isChanting) renderChantingContent(false);
+    }
+
+    function adjustFontSize(delta) {
+      setFontSize(prefs.fontSize + delta);
+    }
+
+    function setContainerWidth(val) {
+      const num = Math.max(60, Math.min(100, parseInt(val, 10) || 96));
+      prefs.containerWidth = num;
+      const stage = document.getElementById('chant-stage');
+      if (stage) stage.style.maxWidth = `${num}%`;
+      const label = document.getElementById('hud-width-label');
+      const slider = document.getElementById('hud-width-slider');
+      if (label) label.textContent = `${num}%`;
+      if (slider) slider.value = num;
+      savePrefsToStorage();
+    }
+
+    function setFontScaleX(val) {
+      const num = Math.max(70, Math.min(110, parseInt(val, 10) || 92));
+      prefs.fontScaleX = num;
+      const label = document.getElementById('hud-scalex-label');
+      const slider = document.getElementById('hud-scalex-slider');
+      if (label) label.textContent = `${num}%`;
+      if (slider) slider.value = num;
+      savePrefsToStorage();
+      if (activeSession.isChanting) renderChantingContent(false);
+    }
+
+    function setLineHeight(val) {
+      const num = Math.max(1.15, Math.min(2.2, parseFloat(val) || 1.45));
+      prefs.lineHeight = num;
+      const label = document.getElementById('hud-lh-label');
+      const slider = document.getElementById('hud-lh-slider');
+      if (label) label.textContent = num.toFixed(2);
+      if (slider) slider.value = num;
+      savePrefsToStorage();
+      if (activeSession.isChanting) renderChantingContent(false);
+    }
+
+    function setFontFamily(family) {
+      prefs.fontFamily = family;
+      document.documentElement.style.setProperty(
+        '--font-chant',
+        family === 'serif' ? "'Noto Serif Thai', serif" : "'Sarabun', sans-serif"
+      );
+      const serifBtn = document.getElementById('hud-font-serif');
+      const sansBtn  = document.getElementById('hud-font-sans');
+      if (serifBtn) {
+        serifBtn.className = family === 'serif'
+          ? 'py-1.5 rounded-lg text-xs font-serif-thai bg-[#D9C39E] text-[#262320] font-semibold transition'
+          : 'py-1.5 rounded-lg text-xs font-serif-thai text-white/75 hover:bg-white/10 transition';
+      }
+      if (sansBtn) {
+        sansBtn.className = family === 'sans'
+          ? 'py-1.5 rounded-lg text-xs font-sans-thai bg-[#D9C39E] text-[#262320] font-semibold transition'
+          : 'py-1.5 rounded-lg text-xs font-sans-thai text-white/75 hover:bg-white/10 transition';
+      }
+      savePrefsToStorage();
+    }
+
+    function setTextAlign(align) {
+      prefs.textAlign = align;
+      const centerBtn = document.getElementById('hud-align-center');
+      const leftBtn   = document.getElementById('hud-align-left');
+      if (centerBtn) {
+        centerBtn.className = align === 'center'
+          ? 'py-1.5 rounded-lg text-xs bg-[#D9C39E] text-[#262320] font-semibold transition'
+          : 'py-1.5 rounded-lg text-xs text-white/75 hover:bg-white/10 transition';
+      }
+      if (leftBtn) {
+        leftBtn.className = align === 'left'
+          ? 'py-1.5 rounded-lg text-xs bg-[#D9C39E] text-[#262320] font-semibold transition'
+          : 'py-1.5 rounded-lg text-xs text-white/75 hover:bg-white/10 transition';
+      }
+      savePrefsToStorage();
+      if (activeSession.isChanting) renderChantingContent(false);
+    }
+
+    function setHudOpacity(val) {
+      prefs.hudOpacity = parseInt(val, 10);
+      savePrefsToStorage();
+      applyHudTransparency();
+    }
+
+    function setHudStyle(styleName) {
+      prefs.hudStyle = styleName;
+      savePrefsToStorage();
+      applyHudTransparency();
+    }
+
+    function applyHudTransparency() {
+      const op = (prefs.hudOpacity !== undefined ? prefs.hudOpacity : 35) / 100;
+      const style = prefs.hudStyle || 'light-glass';
+      const topBox = document.querySelector('#hud-top > div');
+      const botBox = document.getElementById('hud-bottom-box');
+
+      [topBox, botBox].forEach(box => {
+        if (!box) return;
+        box.style.backdropFilter = op < 0.2 ? 'none' : 'blur(5px)';
+        box.style.webkitBackdropFilter = op < 0.2 ? 'none' : 'blur(5px)';
+
+        if (style === 'ghost') {
+          box.style.backgroundColor = 'transparent';
+          box.style.borderColor = 'transparent';
+          box.style.boxShadow = 'none';
+          box.style.color = 'var(--text-primary)';
+        } else if (style === 'light-glass') {
+          const isDarkTheme = document.body.classList.contains('theme-dark');
+          box.style.backgroundColor = isDarkTheme
+            ? `rgba(28, 26, 23, ${op})`
+            : `rgba(247, 242, 228, ${op})`;
+          box.style.borderColor = isDarkTheme
+            ? `rgba(255, 255, 255, ${Math.min(0.3, op * 0.6)})`
+            : `rgba(140, 122, 107, ${Math.min(0.45, op * 0.8)})`;
+          box.style.color = isDarkTheme ? '#E2DDD2' : '#2C2A29';
+          box.style.boxShadow = `0 4px 20px rgba(0, 0, 0, ${op * 0.15})`;
+        } else {
+          box.style.backgroundColor = `rgba(38, 35, 32, ${op})`;
+          box.style.borderColor = `rgba(255, 255, 255, ${Math.min(0.25, op * 0.5)})`;
+          box.style.color = '#F7F4EB';
+          box.style.boxShadow = `0 4px 20px rgba(0, 0, 0, ${op * 0.3})`;
+        }
+      });
+
+      const opLabel = document.getElementById('hud-opacity-label');
+      const opSlider = document.getElementById('hud-opacity-slider');
+      if (opLabel) opLabel.textContent = `${prefs.hudOpacity}%`;
+      if (opSlider) opSlider.value = prefs.hudOpacity;
+
+      ['light-glass', 'dark-glass', 'ghost'].forEach(s => {
+        const b = document.getElementById(`hud-style-${s}`);
+        if (b) {
+          b.className = (s === style)
+            ? 'py-1.5 px-2 rounded-lg text-[11px] font-semibold bg-[#D9C39E] text-[#262320] transition'
+            : 'py-1.5 px-2 rounded-lg text-[11px] text-white/75 hover:bg-white/10 transition';
+        }
+      });
+    }
+
+    function toggleFocusGuide() {
+      prefs.focusGuide = !prefs.focusGuide;
+      updateFocusGuideUI();
+      savePrefsToStorage();
+    }
+
+    function updateFocusGuideUI() {
+      const line = document.getElementById('focus-guide-line');
+      const btn  = document.getElementById('hud-focus-btn');
+      if (line) {
+        line.classList.toggle('active', activeSession.isChanting && prefs.focusGuide && prefs.readingMode === 'scroll');
+      }
+      if (btn) {
+        btn.textContent = prefs.focusGuide ? 'เปิดอยู่' : 'ปิดอยู่';
+        btn.className = prefs.focusGuide
+          ? 'px-3 py-1 rounded-lg bg-[#D9C39E] text-[#262320] text-xs font-semibold transition'
+          : 'px-3 py-1 rounded-lg bg-white/10 text-xs text-white/80 hover:bg-white/20 transition';
+      }
+    }
+
+    function applyAllPreferencesToUI() {
+      setTheme(prefs.theme);
+      setWarmthFilter(prefs.warmth);
+      updateLanguageAndScriptButtonsUI();
+      setFontSize(prefs.fontSize);
+      setContainerWidth(prefs.containerWidth);
+      setFontScaleX(prefs.fontScaleX);
+      setLineHeight(prefs.lineHeight);
+      setFontFamily(prefs.fontFamily);
+      setTextAlign(prefs.textAlign);
+      setScrollSpeed(prefs.scrollSpeed);
+      updateReadingModeButtonsUI();
+      updateFocusGuideUI();
+      applyHudTransparency();
+    }
+
+    // ---------------------------------------------------------
+    // HOME VIEW: CATEGORIES, SEARCH, PLAYLISTS & QUEUE
+    // ---------------------------------------------------------
+    function renderCategories() {
+      const cats = ['ทั้งหมด', ...new Set(chantsData.map(c => c.category).filter(Boolean))];
+      const container = document.getElementById('category-chips');
+      if (!container) return;
+
+      container.innerHTML = cats.map(cat => {
+        const isActive = cat === selectedCategory;
+        return `
+          <button onclick="selectCategory('${escapeHtml(cat)}')"
+            class="px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap transition ${
+              isActive
+                ? 'bg-[var(--accent)] text-[#FAF8F2] shadow-sm'
+                : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--accent)]'
+            }">
+            ${escapeHtml(cat)}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectCategory(cat) {
+      selectedCategory = cat;
+      renderCategories();
+      renderHomeChantList();
+    }
+
+    function renderHomeChantList() {
+      const container = document.getElementById('chant-list-container');
+      const searchInput = document.getElementById('search-input');
+      const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+
+      const filtered = chantsData.filter(chant => {
+        const matchCat = selectedCategory === 'ทั้งหมด' || chant.category === selectedCategory;
+        if (!matchCat) return false;
+        if (!query) return true;
+        const inTitle = chant.title.toLowerCase().includes(query);
+        const inSub   = (chant.subtitle || '').toLowerCase().includes(query);
+        const inStanzas = (chant.stanzas || []).some(s =>
+          (s.pali_thai || '').toLowerCase().includes(query) ||
+          (s.pali_phinthu || '').toLowerCase().includes(query) ||
+          (s.thai_translation || '').toLowerCase().includes(query)
+        );
+        return inTitle || inSub || inStanzas;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="zen-card rounded-2xl p-10 text-center space-y-2">
+            <p class="font-serif-thai text-base text-[var(--text-secondary)]">ไม่พบบทสวดมนต์ที่ค้นหา</p>
+            <p class="text-xs text-[var(--text-muted)]">ลองเปลี่ยนคำค้นหา หรือเลือกหมวดหมู่ "ทั้งหมด"</p>
+          </div>
+        `;
+        updateQueueBarUI();
+        return;
+      }
+
+      container.innerHTML = filtered.map((chant) => {
+        const isQueued = selectedQueueIds.includes(chant.id);
+        const queueOrder = isQueued ? selectedQueueIds.indexOf(chant.id) + 1 : null;
+        const firstStanza = (chant.stanzas && chant.stanzas[0]) ? chant.stanzas[0] : null;
+        const samplePali = firstStanza
+          ? (prefs.paliScript === 'phinthu' ? firstStanza.pali_phinthu : firstStanza.pali_thai)
+          : '';
+
+        return `
+          <div class="zen-card rounded-2xl p-4 sm:p-5 flex items-start sm:items-center justify-between gap-4 group">
+            <div class="flex items-start gap-3.5 min-w-0 flex-1">
+              <button onclick="toggleChantInQueue('${chant.id}')"
+                title="เลือกเข้าลำดับสวดต่อเนื่อง"
+                class="mt-1 w-6 h-6 rounded-lg border flex items-center justify-center text-xs font-semibold shrink-0 transition ${
+                  isQueued
+                    ? 'bg-[var(--accent)] border-[var(--accent)] text-[#FAF8F2]'
+                    : 'border-[var(--border-color)] bg-[var(--bg-primary)] text-transparent hover:border-[var(--accent)]'
+                }">
+                ${isQueued ? queueOrder : '✓'}
+              </button>
+
+              <div onclick="openSingleChant('${chant.id}')" class="cursor-pointer min-w-0 flex-1 space-y-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] font-medium">
+                    ${escapeHtml(chant.category || 'ทั่วไป')}
+                  </span>
+                  <span class="text-[11px] text-[var(--text-muted)]">${(chant.stanzas || []).length} วรรค</span>
+                </div>
+                <h3 class="font-serif-thai text-lg sm:text-xl font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition">
+                  ${escapeHtml(chant.title)}
+                </h3>
+                ${chant.subtitle ? `<p class="text-xs text-[var(--text-secondary)] line-clamp-1">${escapeHtml(chant.subtitle)}</p>` : ''}
+                ${samplePali ? `<p class="font-serif-thai text-xs text-[var(--text-muted)] line-clamp-1 pt-0.5">"${escapeHtml(samplePali.replace(/\n/g, ' '))}"</p>` : ''}
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0 self-center">
+              <button onclick="openSingleChant('${chant.id}')"
+                class="px-4 py-2 rounded-xl bg-[var(--bg-secondary)] group-hover:bg-[var(--accent)] text-[var(--text-primary)] group-hover:text-[#FAF8F2] text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
+                <span>เปิดสวด</span>
+                <span>›</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      updateQueueBarUI();
+    }
+
+    function toggleChantInQueue(chantId) {
+      const idx = selectedQueueIds.indexOf(chantId);
+      if (idx === -1) selectedQueueIds.push(chantId);
+      else selectedQueueIds.splice(idx, 1);
+      renderHomeChantList();
+    }
+
+    function clearQueue() {
+      selectedQueueIds = [];
+      renderHomeChantList();
+    }
+
+    function moveQueueItem(idx, dir) {
+      const target = idx + dir;
+      if (target < 0 || target >= selectedQueueIds.length) return;
+      const temp = selectedQueueIds[idx];
+      selectedQueueIds[idx] = selectedQueueIds[target];
+      selectedQueueIds[target] = temp;
+      renderHomeChantList();
+    }
+
+    function removeQueueItem(idx) {
+      selectedQueueIds.splice(idx, 1);
+      renderHomeChantList();
+    }
+
+    function updateQueueBarUI() {
+      const bar = document.getElementById('queue-bar');
+      if (!bar) return;
+      if (selectedQueueIds.length === 0) {
+        bar.classList.add('hidden');
+        return;
+      }
+      bar.classList.remove('hidden');
+
+      const itemsHtml = selectedQueueIds.map((id, idx) => {
+        const c = chantsData.find(x => x.id === id);
+        if (!c) return '';
+        return `
+          <div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-xs">
+            <span class="font-medium truncate"><strong class="text-[var(--accent)]">${idx + 1}.</strong> ${escapeHtml(c.title)} <span class="text-[var(--text-muted)]">(${escapeHtml(c.category || '')})</span></span>
+            <div class="flex items-center gap-1 shrink-0">
+              <button onclick="moveQueueItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="px-1.5 py-0.5 rounded hover:bg-black/5 disabled:opacity-25">↑</button>
+              <button onclick="moveQueueItem(${idx}, 1)" ${idx === selectedQueueIds.length - 1 ? 'disabled' : ''} class="px-1.5 py-0.5 rounded hover:bg-black/5 disabled:opacity-25">↓</button>
+              <button onclick="removeQueueItem(${idx})" class="px-1.5 py-0.5 rounded text-red-600 hover:bg-red-500/10">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      bar.innerHTML = `
+        <div class="w-full space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-full bg-[var(--accent)] text-[#FAF8F2] text-xs font-semibold flex items-center justify-center">${selectedQueueIds.length}</span>
+              <span class="text-sm font-semibold text-[var(--text-primary)]">จัดลำดับบทสวดมนต์ (เลื่อน ↑ ↓ เพื่อเรียงลำดับตามต้องการ)</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="clearQueue()" class="px-3 py-1.5 rounded-xl text-xs text-[var(--text-secondary)] hover:bg-black/5 transition">ล้างรายการ</button>
+              <button onclick="saveCurrentQueueAsPlaylist()" class="px-3.5 py-1.5 rounded-xl border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-soft)] text-xs font-semibold transition">
+                ★ บันทึกเป็นเพลย์ลิสต์
+              </button>
+              <button onclick="startChantingQueue()" class="px-4 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[#FAF8F2] text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
+                <span>▶ เริ่มสวดตามลำดับนี้</span>
+              </button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-48 overflow-y-auto pr-1">
+            ${itemsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    function saveCurrentQueueAsPlaylist() {
+      if (selectedQueueIds.length === 0) {
+        showToast('กรุณาติ๊กเลือกบทสวดมนต์อย่างน้อย 1 บทก่อนบันทึกเพลย์ลิสต์');
+        return;
+      }
+      const name = prompt('ตั้งชื่อเพลย์ลิสต์สวดมนต์ (เช่น ทำวัตรเช้าประจำวัน, สวดก่อนนอน):');
+      if (!name || !name.trim()) return;
+
+      const existingIdx = playlistsData.findIndex(p => p.name === name.trim());
+      const newPlaylist = {
+        id: existingIdx >= 0 ? playlistsData[existingIdx].id : ('pl-' + Date.now()),
+        name: name.trim(),
+        chantIds: [...selectedQueueIds]
+      };
+
+      if (existingIdx >= 0) {
+        playlistsData[existingIdx] = newPlaylist;
+        showToast(`อัปเดตเพลย์ลิสต์ "${name.trim()}" เรียบร้อยแล้ว`);
+      } else {
+        playlistsData.push(newPlaylist);
+        showToast(`บันทึกเพลย์ลิสต์ "${name.trim()}" เรียบร้อยแล้ว`);
+      }
+      savePlaylists();
+    }
+
+    function playSavedPlaylist(playlistId) {
+      const pl = playlistsData.find(p => p.id === playlistId);
+      if (!pl) return;
+      const validIds = pl.chantIds.filter(id => chantsData.some(c => c.id === id));
+      if (validIds.length === 0) {
+        showToast('ไม่พบบทสวดในเพลย์ลิสต์นี้');
+        return;
+      }
+      startChantingSession(validIds);
+    }
+
+    function loadPlaylistIntoQueue(playlistId) {
+      const pl = playlistsData.find(p => p.id === playlistId);
+      if (!pl) return;
+      selectedQueueIds = pl.chantIds.filter(id => chantsData.some(c => c.id === id));
+      renderHomeChantList();
+      showToast(`โหลด "${pl.name}" ลงรายการจัดลำดับแล้ว`);
+    }
+
+    function deleteSavedPlaylist(playlistId) {
+      const pl = playlistsData.find(p => p.id === playlistId);
+      if (!pl) return;
+      openCustomConfirm('ลบเพลย์ลิสต์', `ต้องการลบเพลย์ลิสต์ "${pl.name}" หรือไม่?`, () => {
+        playlistsData = playlistsData.filter(p => p.id !== playlistId);
+        savePlaylists();
+        showToast('ลบเพลย์ลิสต์เรียบร้อยแล้ว');
+      });
+    }
+
+    function renderPlaylistsSection() {
+      const container = document.getElementById('saved-playlists-section');
+      if (!container) return;
+      if (!playlistsData || playlistsData.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">★ เพลย์ลิสต์บทสวดมนต์ที่บันทึกไว้</span>
+            <span class="text-[11px] text-[var(--text-muted)]">ติ๊กเลือกบทสวดด้านล่างเพื่อสร้างเพิ่มได้</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            ${playlistsData.map(pl => {
+              const validChants = pl.chantIds.map(id => chantsData.find(c => c.id === id)).filter(Boolean);
+              const previewNames = validChants.map(c => c.title).join(' → ');
+              return `
+                <div class="p-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] flex flex-col justify-between gap-2.5">
+                  <div>
+                    <div class="flex items-center justify-between gap-2">
+                      <h4 class="font-serif-thai font-semibold text-sm text-[var(--text-primary)]">${escapeHtml(pl.name)}</h4>
+                      <span class="text-[11px] px-2 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] font-medium">${validChants.length} บท</span>
+                    </div>
+                    <p class="text-[11px] text-[var(--text-muted)] line-clamp-1 mt-1">${escapeHtml(previewNames || 'ไม่มีบทสวด')}</p>
+                  </div>
+                  <div class="flex items-center justify-end gap-1.5 pt-1 border-t border-[var(--border-color)]/60">
+                    <button onclick="loadPlaylistIntoQueue('${pl.id}')" class="px-2.5 py-1 rounded-lg text-[11px] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]">แก้ไขลำดับ</button>
+                    <button onclick="deleteSavedPlaylist('${pl.id}')" class="px-2 py-1 rounded-lg text-[11px] text-red-600 hover:bg-red-500/10">ลบ</button>
+                    <button onclick="playSavedPlaylist('${pl.id}')" class="px-3 py-1 rounded-lg bg-[var(--accent)] text-[#FAF8F2] text-xs font-medium hover:opacity-90">▶ เปิดสวด</button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ---------------------------------------------------------
+    // CHANTING MODE (โหมดสวดมนต์)
+    // ---------------------------------------------------------
+    function openSingleChant(chantId) { startChantingSession([chantId]); }
+    function startChantingQueue() { if (selectedQueueIds.length > 0) startChantingSession([...selectedQueueIds]); }
+    function startChantingAll() { if (chantsData.length > 0) startChantingSession(chantsData.map(c => c.id)); }
+
+    function startChantingSession(queueIds) {
+      closeAllPopovers();
+      activeSession.isChanting = true;
+      activeSession.queueIds = queueIds;
+      activeSession.currentChantIndex = 0;
+      activeSession.currentPageIndex = 0;
+      activeSession.isPlaying = false;
+      stopAutoScrollLoop();
+
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('admin-view').classList.add('hidden');
+      document.getElementById('chanting-view').classList.remove('hidden');
+
+      renderChantingContent(true);
+      showHudTemporarily();
+      updateFocusGuideUI();
+      window.ZenChantApp.hooks.onEnterChanting.forEach(fn => { try { fn(activeSession); } catch (e) {} });
+    }
+
+    function exitChantingMode() {
+      stopAutoScrollLoop();
+      activeSession.isChanting = false;
+      closeHudPopovers();
+      updateFocusGuideUI();
+
+      document.getElementById('chanting-view').classList.add('hidden');
+      document.getElementById('home-view').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.ZenChantApp.hooks.onExitChanting.forEach(fn => { try { fn(); } catch (e) {} });
+    }
+
+    function getCurrentChant() {
+      const id = activeSession.queueIds[activeSession.currentChantIndex];
+      return chantsData.find(c => c.id === id) || chantsData[0];
+    }
+
+    function prevChantInQueue() {
+      if (activeSession.currentChantIndex > 0) {
+        activeSession.currentChantIndex--;
+        if (prefs.readingMode === 'scroll') {
+          const targetEl = document.querySelector(`.chant-continuous-block[data-chant-idx="${activeSession.currentChantIndex}"]`);
+          if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          updateContinuousHudHeader();
+        } else {
+          activeSession.currentPageIndex = 0;
+          renderChantingContent(true);
+        }
+        showHudTemporarily();
+      }
+    }
+
+    function nextChantInQueue() {
+      if (activeSession.currentChantIndex < activeSession.queueIds.length - 1) {
+        activeSession.currentChantIndex++;
+        if (prefs.readingMode === 'scroll') {
+          const targetEl = document.querySelector(`.chant-continuous-block[data-chant-idx="${activeSession.currentChantIndex}"]`);
+          if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          updateContinuousHudHeader();
+        } else {
+          activeSession.currentPageIndex = 0;
+          renderChantingContent(true);
+        }
+        showHudTemporarily();
+      }
+    }
+
+    function updateContinuousHudHeader() {
+      const totalQueue = activeSession.queueIds.length;
+      const currentNum = activeSession.currentChantIndex + 1;
+      const chant = getCurrentChant();
+      if (chant) {
+        document.getElementById('hud-queue-indicator').textContent =
+          totalQueue > 1 ? `บทที่ ${currentNum}/${totalQueue}` : 'โหมดสวดมนต์';
+        document.getElementById('hud-chant-title').textContent = chant.title;
+      }
+      document.getElementById('hud-prev-chant-btn').disabled = (activeSession.currentChantIndex <= 0);
+      document.getElementById('hud-next-chant-btn').disabled = (activeSession.currentChantIndex >= totalQueue - 1);
+    }
+
+    function setReadingMode(mode) {
+      prefs.readingMode = mode;
+      savePrefsToStorage();
+      updateReadingModeButtonsUI();
+      updateFocusGuideUI();
+      if (activeSession.isChanting) renderChantingContent(false);
+    }
+
+    function updateReadingModeButtonsUI() {
+      const scrollBtn = document.getElementById('mode-btn-scroll');
+      const pageBtn   = document.getElementById('mode-btn-page');
+      const pageNav   = document.getElementById('hud-page-nav');
+
+      const isScroll = prefs.readingMode === 'scroll';
+      if (scrollBtn) {
+        scrollBtn.className = isScroll
+          ? 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#D9C39E] text-[#262320] transition flex items-center gap-1'
+          : 'px-2.5 py-1.5 rounded-lg text-xs font-medium opacity-75 hover:opacity-100 transition flex items-center gap-1';
+      }
+      if (pageBtn) {
+        pageBtn.className = !isScroll
+          ? 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#D9C39E] text-[#262320] transition flex items-center gap-1'
+          : 'px-2.5 py-1.5 rounded-lg text-xs font-medium opacity-75 hover:opacity-100 transition flex items-center gap-1';
+      }
+      if (pageNav) pageNav.classList.toggle('hidden', isScroll);
+    }
+
+    function buildStanzaHTML(stanza, index) {
+      const paliText = prefs.paliScript === 'phinthu'
+        ? (stanza.pali_phinthu || stanza.pali_thai || '')
+        : (stanza.pali_thai || stanza.pali_phinthu || '');
+      const thaiText = stanza.thai_translation || '';
+
+      const showPali = prefs.languageMode === 'both' || prefs.languageMode === 'pali';
+      const showThai = prefs.languageMode === 'both' || prefs.languageMode === 'thai';
+
+      const isCenter = prefs.textAlign === 'center';
+      const alignClass = isCenter ? 'text-center' : 'text-left';
+      const flexJustify = isCenter ? 'center' : 'flex-start';
+      const transformOrigin = isCenter ? 'center top' : 'left top';
+
+      const paliSize = prefs.fontSize;
+      const thaiSize = Math.max(16, Math.round(prefs.fontSize * 0.72));
+      const scaleRatio = (prefs.fontScaleX || 100) / 100;
+      const inverseWidthPct = (100 / scaleRatio).toFixed(2);
+      const lh = prefs.lineHeight || 1.45;
+
+      let html = `
+        <article class="chant-stanza ${alignClass} space-y-2 py-1 overflow-x-hidden" data-stanza-index="${index}">
+          ${stanza.note ? `
+            <div class="text-xs sm:text-sm font-medium text-[var(--accent)] tracking-wide opacity-85">
+              ${escapeHtml(stanza.note)}
+            </div>
+          ` : ''}
+
+          ${showPali && paliText ? `
+            <div style="display:flex; justify-content:${flexJustify}; width:100%; overflow:hidden;">
+              <div class="chant-typography font-medium text-[var(--text-primary)] whitespace-pre-line"
+                style="font-size:${paliSize}px; line-height:${lh}; width:${inverseWidthPct}%; flex-shrink:0; transform:scaleX(${scaleRatio}); transform-origin:${transformOrigin};">${escapeHtml(paliText)}</div>
+            </div>
+          ` : ''}
+
+          ${showThai && thaiText ? `
+            <div style="display:flex; justify-content:${flexJustify}; width:100%; overflow:hidden;">
+              <div class="font-sans-thai text-[var(--translation-text)] whitespace-pre-line pt-1"
+                style="font-size:${thaiSize}px; line-height:${Math.max(1.3, lh - 0.05)}; width:${inverseWidthPct}%; flex-shrink:0; transform:scaleX(${scaleRatio}); transform-origin:${transformOrigin};">${escapeHtml(thaiText)}</div>
+            </div>
+          ` : ''}
+        </article>
+      `;
+
+      window.ZenChantApp.hooks.transformStanzaHTML.forEach(fn => {
+        try { html = fn(html, stanza, index) || html; } catch (e) {}
+      });
+      return html;
+    }
+
+    function renderChantingContent(resetPosition = false) {
+      const chant = getCurrentChant();
+      if (!chant) return;
+
+      updateContinuousHudHeader();
+
+      const scrollContainer = document.getElementById('scroll-mode-container');
+      const pageContainer   = document.getElementById('page-mode-container');
+
+      if (prefs.readingMode === 'scroll') {
+        scrollContainer.classList.remove('hidden');
+        pageContainer.classList.add('hidden');
+        renderScrollMode(chant, resetPosition);
+      } else {
+        scrollContainer.classList.add('hidden');
+        pageContainer.classList.remove('hidden');
+        renderPageMode(chant, resetPosition);
+      }
+
+      updateTimelineUI();
+      window.ZenChantApp.hooks.onRenderChant.forEach(fn => { try { fn(chant); } catch (e) {} });
+    }
+
+    function renderScrollMode(chant, resetPosition) {
+      const area = document.getElementById('scroll-content-area');
+      const alignClass = prefs.textAlign === 'center' ? 'text-center' : 'text-left';
+      const queueChants = activeSession.queueIds
+        .map(id => chantsData.find(c => c.id === id))
+        .filter(Boolean);
+
+      if (queueChants.length === 0 && chant) queueChants.push(chant);
+
+      area.innerHTML = queueChants.map((c, cIdx) => {
+        const stanzasHtml = (c.stanzas || []).map((st, idx) => buildStanzaHTML(st, idx)).join('');
+        return `
+          <section class="chant-continuous-block ${cIdx > 0 ? 'pt-5 border-t border-[var(--border-color)]/60' : ''}" data-chant-idx="${cIdx}">
+            <header class="${alignClass} mb-2">
+              <h2 class="chant-typography font-semibold text-[var(--accent)]"
+                style="font-size: ${Math.round(prefs.fontSize * 0.85)}px;">
+                ${escapeHtml(c.title)}
+              </h2>
+            </header>
+            <div class="space-y-3">
+              ${stanzasHtml}
+            </div>
+          </section>
+        `;
+      }).join('');
+
+      if (resetPosition) window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    function renderPageMode(chant, resetPosition) {
+      const stanzas = chant.stanzas || [];
+      const perPage = (prefs.fontSize >= 34 || prefs.languageMode === 'both') ? 1 : 2;
+      activeSession.pages = [];
+
+      for (let i = 0; i < stanzas.length; i += perPage) {
+        activeSession.pages.push(stanzas.slice(i, i + perPage));
+      }
+      if (activeSession.pages.length === 0) activeSession.pages.push([]);
+
+      if (resetPosition) activeSession.currentPageIndex = 0;
+      else if (activeSession.currentPageIndex >= activeSession.pages.length) {
+        activeSession.currentPageIndex = activeSession.pages.length - 1;
+      }
+
+      renderCurrentBookPage(chant);
+    }
+
+    function renderCurrentBookPage(chant) {
+      const pageArea = document.getElementById('page-content-area');
+      const pageStanzas = activeSession.pages[activeSession.currentPageIndex] || [];
+      const totalPages = activeSession.pages.length;
+      const currentPageNum = activeSession.currentPageIndex + 1;
+      const alignClass = prefs.textAlign === 'center' ? 'text-center' : 'text-left';
+
+      pageArea.innerHTML = `
+        <div class="page-animate space-y-6">
+          ${activeSession.currentPageIndex === 0 ? `
+            <header class="${alignClass} pb-3 border-b border-[var(--border-color)]/50">
+              <h1 class="chant-typography font-semibold text-[var(--accent)]"
+                style="font-size: ${Math.round(prefs.fontSize * 0.85)}px;">
+                ${escapeHtml(chant.title)}
+              </h1>
+            </header>
+          ` : ''}
+          <div class="space-y-6">
+            ${pageStanzas.map((st, idx) => buildStanzaHTML(st, idx)).join('')}
+          </div>
+        </div>
+      `;
+
+      const badge = document.getElementById('hud-page-badge');
+      const minInd = document.getElementById('minimal-page-indicator');
+      if (badge) badge.textContent = `${currentPageNum} / ${totalPages}`;
+      if (minInd) minInd.textContent = `หน้า ${currentPageNum} / ${totalPages}`;
+
+      const prevBtn = document.getElementById('prev-page-btn');
+      const nextBtn = document.getElementById('next-page-btn');
+      if (prevBtn) prevBtn.disabled = (activeSession.currentPageIndex <= 0 && activeSession.currentChantIndex <= 0);
+      if (nextBtn) {
+        const atLastPage = activeSession.currentPageIndex >= totalPages - 1;
+        const atLastChant = activeSession.currentChantIndex >= activeSession.queueIds.length - 1;
+        nextBtn.disabled = (atLastPage && atLastChant);
+      }
+
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      updateTimelineUI();
+    }
+
+    function changePage(direction) {
+      const totalPages = activeSession.pages.length;
+      const nextIdx = activeSession.currentPageIndex + direction;
+
+      if (nextIdx >= 0 && nextIdx < totalPages) {
+        activeSession.currentPageIndex = nextIdx;
+        renderCurrentBookPage(getCurrentChant());
+      } else if (direction > 0 && activeSession.currentChantIndex < activeSession.queueIds.length - 1) {
+        activeSession.currentChantIndex++;
+        activeSession.currentPageIndex = 0;
+        renderChantingContent(true);
+        showToast(`เข้าสู่บทถัดไป: ${getCurrentChant().title}`);
+      } else if (direction < 0 && activeSession.currentChantIndex > 0) {
+        activeSession.currentChantIndex--;
+        renderChantingContent(true);
+        activeSession.currentPageIndex = Math.max(0, activeSession.pages.length - 1);
+        renderCurrentBookPage(getCurrentChant());
+      }
+    }
+
+    function handlePageTapZone(event, dir) {
+      event.stopPropagation();
+      changePage(dir === 'next' ? 1 : -1);
+    }
+
+    // ---------------------------------------------------------
+    // AUTO-SCROLL & TIMELINE ENGINE
+    // ---------------------------------------------------------
+    function toggleAutoScroll() {
+      if (activeSession.isPlaying) stopAutoScrollLoop();
+      else startAutoScrollLoop();
+    }
+
+    function startAutoScrollLoop() {
+      activeSession.isPlaying = true;
+      activeSession.lastFrameTime = performance.now();
+      activeSession.scrollAccumulator = 0;
+      activeSession.pageTimerAccum = 0;
+      updatePlayPauseUI();
+      scheduleHudAutoHide();
+      activeSession.rafId = requestAnimationFrame(autoScrollStep);
+    }
+
+    function stopAutoScrollLoop() {
+      activeSession.isPlaying = false;
+      if (activeSession.rafId) {
+        cancelAnimationFrame(activeSession.rafId);
+        activeSession.rafId = null;
+      }
+      updatePlayPauseUI();
+    }
+
+    function updatePlayPauseUI() {
+      const iconPlay  = document.getElementById('icon-play');
+      const iconPause = document.getElementById('icon-pause');
+      if (iconPlay) iconPlay.classList.toggle('hidden', activeSession.isPlaying);
+      if (iconPause) iconPause.classList.toggle('hidden', !activeSession.isPlaying);
+    }
+
+    function setScrollSpeed(val) {
+      const num = Math.max(0.25, Math.min(4.0, parseFloat(val) || 1.0));
+      prefs.scrollSpeed = num;
+      const slider = document.getElementById('speed-slider');
+      const label  = document.getElementById('speed-label');
+      if (slider) slider.value = num;
+      if (label) label.textContent = `${num.toFixed(2).replace(/\.00$/, '.0').replace(/0$/, '')}x`;
+      savePrefsToStorage();
+    }
+
+    function adjustScrollSpeed(delta) {
+      setScrollSpeed(prefs.scrollSpeed + delta);
+    }
+
+    function autoScrollStep(now) {
+      if (!activeSession.isPlaying || !activeSession.isChanting) return;
+      const dt = (now - activeSession.lastFrameTime) / 1000;
+      activeSession.lastFrameTime = now;
+
+      if (prefs.readingMode === 'scroll') {
+        const pixelsPerSec = 36 * prefs.scrollSpeed;
+        activeSession.scrollAccumulator += pixelsPerSec * dt;
+        if (Math.abs(activeSession.scrollAccumulator) >= 1) {
+          const stepPx = Math.trunc(activeSession.scrollAccumulator);
+          window.scrollBy(0, stepPx);
+          activeSession.scrollAccumulator -= stepPx;
+        }
+        const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        if (window.scrollY >= maxScroll - 2) {
+          stopAutoScrollLoop();
+          showHudTemporarily();
+          showToast('สวดมนต์จบครบทุกบทแล้ว สาธุ');
+          return;
+        }
+      } else {
+        const secPerPage = 12 / prefs.scrollSpeed;
+        activeSession.pageTimerAccum += dt;
+        if (activeSession.pageTimerAccum >= secPerPage) {
+          activeSession.pageTimerAccum = 0;
+          const totalPages = activeSession.pages.length;
+          const atLastPage = activeSession.currentPageIndex >= totalPages - 1;
+          const atLastChant = activeSession.currentChantIndex >= activeSession.queueIds.length - 1;
+          if (atLastPage && atLastChant) {
+            stopAutoScrollLoop();
+            showHudTemporarily();
+            showToast('สวดมนต์จบครบทุกหน้าแล้ว สาธุ');
+            return;
+          } else {
+            changePage(1);
+          }
+        }
+      }
+
+      updateTimelineUI();
+      activeSession.rafId = requestAnimationFrame(autoScrollStep);
+    }
+
+    function updateTimelineUI() {
+      if (!activeSession.isChanting) return;
+      const fillEl  = document.getElementById('timeline-fill');
+      const leftEl  = document.getElementById('hud-progress-left');
+      const rightEl = document.getElementById('hud-progress-right');
+      const chant   = getCurrentChant();
+      const totalStanzas = (chant && chant.stanzas) ? chant.stanzas.length : 1;
+
+      if (prefs.readingMode === 'scroll') {
+        const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const pct = Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100));
+        if (fillEl) fillEl.style.width = `${pct.toFixed(1)}%`;
+        if (leftEl) leftEl.textContent = `${Math.round(pct)}%`;
+        const approxStanza = Math.min(totalStanzas, Math.max(1, Math.ceil((pct / 100) * totalStanzas)));
+        if (rightEl) rightEl.textContent = `วรรค ${approxStanza}/${totalStanzas}`;
+      } else {
+        const totalPages = Math.max(1, activeSession.pages.length);
+        const currentPage = activeSession.currentPageIndex + 1;
+        const pct = totalPages === 1 ? 100 : ((currentPage - 1) / (totalPages - 1)) * 100;
+        if (fillEl) fillEl.style.width = `${pct.toFixed(1)}%`;
+        if (leftEl) leftEl.textContent = `หน้า ${currentPage}`;
+        if (rightEl) rightEl.textContent = `จาก ${totalPages} หน้า`;
+      }
+    }
+
+    function startTimelineScrub(event) {
+      event.stopPropagation();
+      seekTimelineFromEvent(event);
+
+      const moveHandler = (e) => seekTimelineFromEvent(e);
+      const upHandler = () => {
+        window.removeEventListener('mousemove', moveHandler);
+        window.removeEventListener('mouseup', upHandler);
+        window.removeEventListener('touchmove', moveHandler);
+        window.removeEventListener('touchend', upHandler);
+      };
+
+      window.addEventListener('mousemove', moveHandler);
+      window.addEventListener('mouseup', upHandler);
+      window.addEventListener('touchmove', moveHandler, { passive: true });
+      window.addEventListener('touchend', upHandler);
+    }
+
+    function seekTimelineFromEvent(event) {
+      const scrubber = document.getElementById('timeline-scrubber');
+      if (!scrubber) return;
+      const rect = scrubber.getBoundingClientRect();
+      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+      const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+
+      if (prefs.readingMode === 'scroll') {
+        const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        window.scrollTo({ top: ratio * maxScroll, behavior: 'instant' });
+      } else {
+        const totalPages = Math.max(1, activeSession.pages.length);
+        const targetPage = Math.min(totalPages - 1, Math.floor(ratio * totalPages));
+        if (targetPage !== activeSession.currentPageIndex) {
+          activeSession.currentPageIndex = targetPage;
+          renderCurrentBookPage(getCurrentChant());
+        }
+      }
+      updateTimelineUI();
+    }
+
+    // ---------------------------------------------------------
+    // HUD AUTO-HIDE & POPOVERS
+    // ---------------------------------------------------------
+    function handleStageTap() {
+      if (activeSession.activePopover) {
+        closeHudPopovers();
+        return;
+      }
+      if (activeSession.hudVisible) hideHudImmediately();
+      else showHudTemporarily();
+    }
+
+    function showHudTemporarily() {
+      if (!activeSession.isChanting) return;
+      activeSession.hudVisible = true;
+      const top = document.getElementById('hud-top');
+      const bottom = document.getElementById('hud-bottom');
+      if (top) top.classList.remove('hud-hidden-top');
+      if (bottom) bottom.classList.remove('hud-hidden-bottom');
+      scheduleHudAutoHide();
+    }
+
+    function hideHudImmediately() {
+      if (activeSession.hudPinned || activeSession.activePopover) return;
+      activeSession.hudVisible = false;
+      const top = document.getElementById('hud-top');
+      const bottom = document.getElementById('hud-bottom');
+      if (top) top.classList.add('hud-hidden-top');
+      if (bottom) bottom.classList.add('hud-hidden-bottom');
+      if (activeSession.hudTimeoutId) clearTimeout(activeSession.hudTimeoutId);
+    }
+
+    function scheduleHudAutoHide() {
+      if (activeSession.hudTimeoutId) clearTimeout(activeSession.hudTimeoutId);
+      if (activeSession.hudPinned || activeSession.activePopover) return;
+      activeSession.hudTimeoutId = setTimeout(() => {
+        if (activeSession.isChanting && !activeSession.hudPinned && !activeSession.activePopover) {
+          hideHudImmediately();
+        }
+      }, 3200);
+    }
+
+    function togglePinHud() {
+      activeSession.hudPinned = !activeSession.hudPinned;
+      const pinBtn = document.getElementById('hud-pin-btn');
+      const pinLabel = document.getElementById('hud-pin-label');
+      if (pinBtn) {
+        pinBtn.className = activeSession.hudPinned
+          ? 'px-2.5 py-1.5 rounded-xl text-xs bg-[#D9C39E] text-[#262320] font-semibold transition flex items-center gap-1'
+          : 'px-2.5 py-1.5 rounded-xl text-xs hover:bg-black/10 transition flex items-center gap-1';
+      }
+      if (pinLabel) pinLabel.textContent = activeSession.hudPinned ? 'ตรึงแถบไว้' : 'ซ่อนอัตโนมัติ';
+      if (!activeSession.hudPinned) scheduleHudAutoHide();
+    }
+
+    function toggleHudPopover(popoverName) {
+      const langPop = document.getElementById('hud-popover-lang');
+      const appPop  = document.getElementById('hud-popover-appearance');
+      if (activeSession.activePopover === popoverName) {
+        closeHudPopovers();
+        return;
+      }
+      activeSession.activePopover = popoverName;
+      if (langPop) langPop.classList.toggle('hidden', popoverName !== 'lang');
+      if (appPop) appPop.classList.toggle('hidden', popoverName !== 'appearance');
+      if (activeSession.hudTimeoutId) clearTimeout(activeSession.hudTimeoutId);
+    }
+
+    function closeHudPopovers() {
+      activeSession.activePopover = null;
+      const langPop = document.getElementById('hud-popover-lang');
+      const appPop  = document.getElementById('hud-popover-appearance');
+      if (langPop) langPop.classList.add('hidden');
+      if (appPop) appPop.classList.add('hidden');
+      scheduleHudAutoHide();
+    }
+
+    function toggleHomeEyeCarePopover(event) {
+      event.stopPropagation();
+      const pop = document.getElementById('home-eyecare-popover');
+      if (pop) pop.classList.toggle('hidden');
+    }
+
+    function closeAllPopovers() {
+      const homePop = document.getElementById('home-eyecare-popover');
+      if (homePop) homePop.classList.add('hidden');
+      closeHudPopovers();
+    }
+
+    // ---------------------------------------------------------
+    // ADMIN MANAGEMENT & MODULAR PLUGIN MANAGER
+    // ---------------------------------------------------------
+    function handleAdminButtonClick() {
+      if (adminState.isAuthenticated) openAdminDashboard();
+      else {
+        const modal = document.getElementById('admin-login-modal');
+        const input = document.getElementById('admin-password-input');
+        const err   = document.getElementById('admin-password-error');
+        if (err) err.classList.add('hidden');
+        if (input) input.value = '';
+        if (modal) modal.classList.remove('hidden');
+        setTimeout(() => input && input.focus(), 80);
+      }
+    }
+
+    function closeAdminLoginModal() {
+      document.getElementById('admin-login-modal').classList.add('hidden');
+    }
+
+    function submitAdminPassword(event) {
+      event.preventDefault();
+      const input = document.getElementById('admin-password-input');
+      const err   = document.getElementById('admin-password-error');
+      const val   = (input ? input.value : '').trim();
+
+      if (val === 'Karn') {
+        adminState.isAuthenticated = true;
+        document.getElementById('admin-btn-text').textContent = 'จัดการบทสวด (Karn)';
+        closeAdminLoginModal();
+        openAdminDashboard();
+        showToast('เข้าสู่โหมดผู้ดูแลเรียบร้อยแล้ว');
+      } else {
+        if (err) err.classList.remove('hidden');
+        if (input) input.select();
+      }
+    }
+
+    function openAdminDashboard() {
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('chanting-view').classList.add('hidden');
+      document.getElementById('admin-view').classList.remove('hidden');
+
+      renderAdminChantList();
+      if (!adminState.editingChantId && chantsData.length > 0) {
+        loadChantIntoEditor(chantsData[0].id);
+      } else if (chantsData.length === 0) {
+        createNewChantInEditor();
+      }
+    }
+
+    function closeAdminView() {
+      document.getElementById('admin-view').classList.add('hidden');
+      document.getElementById('home-view').classList.remove('hidden');
+      renderCategories();
+      renderHomeChantList();
+      renderPlaylistsSection();
+    }
+
+    function logoutAdmin() {
+      adminState.isAuthenticated = false;
+      document.getElementById('admin-btn-text').textContent = 'ผู้ดูแล';
+      closeAdminView();
+      showToast('ออกจากโหมดผู้ดูแลแล้ว');
+    }
+
+    function renderAdminChantList() {
+      const container = document.getElementById('admin-chant-list');
+      const countEl = document.getElementById('admin-total-count');
+      if (countEl) countEl.textContent = chantsData.length;
+      if (!container) return;
+
+      container.innerHTML = chantsData.map((chant, idx) => {
+        const isEditing = chant.id === adminState.editingChantId;
+        return `
+          <div class="p-3.5 rounded-xl border transition flex items-center justify-between gap-2 ${
+            isEditing
+              ? 'bg-[var(--accent-soft)] border-[var(--accent)]'
+              : 'bg-[var(--bg-card)] border-[var(--border-color)] hover:border-[var(--accent)]/60'
+          }">
+            <div onclick="loadChantIntoEditor('${chant.id}')" class="cursor-pointer min-w-0 flex-1">
+              <div class="text-[11px] text-[var(--accent)] font-medium">${escapeHtml(chant.category || 'ทั่วไป')} • ${(chant.stanzas || []).length} วรรค</div>
+              <div class="font-serif-thai text-sm sm:text-base font-semibold text-[var(--text-primary)] truncate">${escapeHtml(chant.title)}</div>
+            </div>
+
+            <div class="flex items-center gap-1 shrink-0">
+              <button onclick="moveChantOrder(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}
+                class="p-1.5 rounded-lg hover:bg-black/5 disabled:opacity-25 text-xs" title="เลื่อนขึ้น">↑</button>
+              <button onclick="moveChantOrder(${idx}, 1)" ${idx === chantsData.length - 1 ? 'disabled' : ''}
+                class="p-1.5 rounded-lg hover:bg-black/5 disabled:opacity-25 text-xs" title="เลื่อนลง">↓</button>
+              <button onclick="loadChantIntoEditor('${chant.id}')"
+                class="px-2.5 py-1 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-xs font-medium hover:border-[var(--accent)]">
+                แก้ไข
+              </button>
+              <button onclick="confirmDeleteChant('${chant.id}')"
+                class="p-1.5 rounded-lg text-red-700 hover:bg-red-500/10 text-xs" title="ลบบทสวด">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function moveChantOrder(index, direction) {
+      const target = index + direction;
+      if (target < 0 || target >= chantsData.length) return;
+      const temp = chantsData[index];
+      chantsData[index] = chantsData[target];
+      chantsData[target] = temp;
+      saveChantsToStorage();
+      renderAdminChantList();
+    }
+
+    function loadChantIntoEditor(chantId) {
+      const chant = chantsData.find(c => c.id === chantId);
+      if (!chant) return;
+
+      adminState.editingChantId = chant.id;
+      adminState.editingStanzas = JSON.parse(JSON.stringify(chant.stanzas || []));
+
+      document.getElementById('editor-mode-badge').textContent = 'แก้ไขบทสวดมนต์';
+      document.getElementById('editor-header-title').textContent = chant.title;
+      document.getElementById('edit-chant-title').value = chant.title || '';
+      document.getElementById('edit-chant-category').value = chant.category || '';
+      document.getElementById('edit-chant-subtitle').value = chant.subtitle || '';
+
+      renderAdminChantList();
+      renderEditorStanzas();
+    }
+
+    function createNewChantInEditor() {
+      adminState.editingChantId = 'new-' + Date.now();
+      adminState.editingStanzas = [{ note: '', pali_phinthu: '', pali_thai: '', thai_translation: '' }];
+
+      document.getElementById('editor-mode-badge').textContent = 'สร้างบทสวดมนต์ใหม่';
+      document.getElementById('editor-header-title').textContent = 'บทสวดมนต์รายการใหม่';
+      document.getElementById('edit-chant-title').value = '';
+      document.getElementById('edit-chant-category').value = 'ภาค ๑ คำทำวัตรเช้า';
+      document.getElementById('edit-chant-subtitle').value = '';
+
+      renderAdminChantList();
+      renderEditorStanzas();
+      document.getElementById('edit-chant-title').focus();
+    }
+
+    function renderEditorStanzas() {
+      const container = document.getElementById('editor-stanzas-container');
+      if (!container) return;
+
+      container.innerHTML = adminState.editingStanzas.map((stanza, idx) => `
+        <div class="p-4 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--accent)]">วรรคที่ ${idx + 1}</span>
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="moveStanzaInEditor(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}
+                class="px-2 py-0.5 rounded bg-[var(--bg-card)] border border-[var(--border-color)] disabled:opacity-30 text-xs">↑</button>
+              <button type="button" onclick="moveStanzaInEditor(${idx}, 1)" ${idx === adminState.editingStanzas.length - 1 ? 'disabled' : ''}
+                class="px-2 py-0.5 rounded bg-[var(--bg-card)] border border-[var(--border-color)] disabled:opacity-30 text-xs">↓</button>
+              <button type="button" onclick="removeStanzaInEditor(${idx})"
+                class="px-2 py-0.5 rounded text-red-700 hover:bg-red-500/10 text-xs">ลบวรรคนี้</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] text-[var(--text-secondary)] mb-1">คำกำกับวรรค (ถ้ามี)</label>
+            <input type="text" value="${escapeHtml(stanza.note || '')}"
+              oninput="updateStanzaField(${idx}, 'note', this.value)"
+              onfocus="setLastFocusedInput(this)"
+              placeholder="เว้นว่างได้"
+              class="w-full px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-xs focus:outline-none focus:border-[var(--accent)]" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] text-[var(--text-secondary)] mb-1">บาลีสะกดแบบไทย (สระอะ / ยามักการ ๎)</label>
+              <textarea rows="3"
+                oninput="updateStanzaField(${idx}, 'pali_thai', this.value)"
+                onfocus="setLastFocusedInput(this)"
+                class="w-full px-3 py-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] font-serif-thai text-sm focus:outline-none focus:border-[var(--accent)]">${escapeHtml(stanza.pali_thai || '')}</textarea>
+            </div>
+
+            <div>
+              <label class="block text-[11px] text-[var(--text-secondary)] mb-1">บาลีอักษรไทย (พินทุ ฺ / นิคหิต ํ)</label>
+              <textarea rows="3"
+                oninput="updateStanzaField(${idx}, 'pali_phinthu', this.value)"
+                onfocus="setLastFocusedInput(this)"
+                class="w-full px-3 py-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] font-serif-thai text-sm focus:outline-none focus:border-[var(--accent)]">${escapeHtml(stanza.pali_phinthu || '')}</textarea>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] text-[var(--text-secondary)] mb-1">คำแปลภาษาไทย</label>
+            <textarea rows="2"
+              oninput="updateStanzaField(${idx}, 'thai_translation', this.value)"
+              onfocus="setLastFocusedInput(this)"
+              class="w-full px-3 py-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-xs sm:text-sm focus:outline-none focus:border-[var(--accent)]">${escapeHtml(stanza.thai_translation || '')}</textarea>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setLastFocusedInput(el) { adminState.lastFocusedInput = el; }
+
+    function insertSpecialChar(charStr) {
+      const el = adminState.lastFocusedInput;
+      if (!el) {
+        showToast('กรุณาคลิกในช่องข้อความบทสวดที่ต้องการแทรกอักขระก่อน');
+        return;
+      }
+      const start = el.selectionStart || 0;
+      const end   = el.selectionEnd || 0;
+      const val   = el.value || '';
+      el.value = val.substring(0, start) + charStr + val.substring(end);
+      el.selectionStart = el.selectionEnd = start + charStr.length;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.focus();
+    }
+
+    function updateStanzaField(idx, field, value) {
+      if (adminState.editingStanzas[idx]) adminState.editingStanzas[idx][field] = value;
+    }
+
+    function addStanzaInEditor() {
+      adminState.editingStanzas.push({ note: '', pali_phinthu: '', pali_thai: '', thai_translation: '' });
+      renderEditorStanzas();
+    }
+
+    function removeStanzaInEditor(idx) {
+      if (adminState.editingStanzas.length <= 1) {
+        showToast('บทสวดต้องมีอย่างน้อย 1 วรรค');
+        return;
+      }
+      adminState.editingStanzas.splice(idx, 1);
+      renderEditorStanzas();
+    }
+
+    function moveStanzaInEditor(idx, direction) {
+      const target = idx + direction;
+      if (target < 0 || target >= adminState.editingStanzas.length) return;
+      const temp = adminState.editingStanzas[idx];
+      adminState.editingStanzas[idx] = adminState.editingStanzas[target];
+      adminState.editingStanzas[target] = temp;
+      renderEditorStanzas();
+    }
+
+    function saveCurrentEditedChant() {
+      const title = document.getElementById('edit-chant-title').value.trim();
+      const category = document.getElementById('edit-chant-category').value.trim() || 'บทสวดพื้นฐาน';
+      const subtitle = document.getElementById('edit-chant-subtitle').value.trim();
+
+      if (!title) {
+        showToast('กรุณาระบุชื่อบทสวดมนต์');
+        document.getElementById('edit-chant-title').focus();
+        return;
+      }
+
+      const existingIdx = chantsData.findIndex(c => c.id === adminState.editingChantId);
+      const chantRecord = {
+        id: existingIdx >= 0 ? adminState.editingChantId : 'chant-' + Date.now(),
+        title,
+        category,
+        subtitle,
+        stanzas: JSON.parse(JSON.stringify(adminState.editingStanzas))
+      };
+
+      if (existingIdx >= 0) chantsData[existingIdx] = chantRecord;
+      else {
+        chantsData.push(chantRecord);
+        adminState.editingChantId = chantRecord.id;
+      }
+
+      saveChantsToStorage();
+      renderAdminChantList();
+      document.getElementById('editor-mode-badge').textContent = 'แก้ไขบทสวดมนต์';
+      document.getElementById('editor-header-title').textContent = chantRecord.title;
+      showToast(`บันทึก "${chantRecord.title}" เรียบร้อยแล้ว`);
+    }
+
+    function confirmDeleteChant(chantId) {
+      const chant = chantsData.find(c => c.id === chantId);
+      if (!chant) return;
+
+      openCustomConfirm('ยืนยันการลบบทสวดมนต์', `คุณต้องการลบบทสวด "${chant.title}" ออกจากรายการหรือไม่?`, () => {
+        chantsData = chantsData.filter(c => c.id !== chantId);
+        selectedQueueIds = selectedQueueIds.filter(id => id !== chantId);
+        saveChantsToStorage();
+        if (adminState.editingChantId === chantId) {
+          if (chantsData.length > 0) loadChantIntoEditor(chantsData[0].id);
+          else createNewChantInEditor();
+        }
+        renderAdminChantList();
+        showToast('ลบบทสวดมนต์เรียบร้อยแล้ว');
+      });
+    }
+
+    function confirmClearAllChants() {
+      openCustomConfirm('ล้างรายการบทสวดทั้งหมด', 'คุณต้องการล้างบทสวดทั้งหมดเพื่อเริ่มนำเข้าไฟล์ JSON ใหม่ตามลำดับใช่หรือไม่?', () => {
+        chantsData = [];
+        selectedQueueIds = [];
+        saveChantsToStorage();
+        createNewChantInEditor();
+        renderAdminChantList();
+        renderCategories();
+        renderHomeChantList();
+        showToast('ล้างรายการทั้งหมดแล้ว สามารถกดนำเข้า JSON ทีละภาคได้เลย');
+      });
+    }
+
+    function exportChantsJson() {
+      const dataStr = JSON.stringify(chantsData, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'thai-chanting-book.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('ส่งออกไฟล์ JSON เรียบร้อยแล้ว');
+    }
+
+    // 100% Stack JSON Import
+    function importChantsJson(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].title && Array.isArray(parsed[0].stanzas)) {
+            parsed.forEach((item, index) => {
+              let newId = item.id || ('chant-' + Date.now() + '-' + index);
+              if (chantsData.some(c => c.id === newId)) {
+                newId = newId + '-' + Date.now() + '-' + index;
+              }
+              chantsData.push({ ...item, id: newId });
+            });
+            saveChantsToStorage();
+            loadChantIntoEditor(chantsData[chantsData.length - 1].id);
+            renderAdminChantList();
+            renderCategories();
+            renderHomeChantList();
+            showToast(`สแต็กเพิ่มต่อท้ายสำเร็จ +${parsed.length} บท (รวมทั้งหมด ${chantsData.length} บท)`);
+          } else {
+            showToast('รูปแบบไฟล์ JSON ไม่ถูกต้อง');
+          }
+        } catch (err) {
+          showToast('ไม่สามารถอ่านไฟล์ JSON ได้');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function saveSharedDatabaseFile() {
+      const jsContent =
+        'window.SHARED_CHANTS = ' + JSON.stringify(chantsData, null, 2) + ';\n' +
+        'window.SHARED_PLAYLISTS = ' + JSON.stringify(playlistsData, null, 2) + ';\n' +
+        'window.SHARED_MODULES = ' + JSON.stringify(modulesConfig, null, 2) + ';';
+      const blob = new Blob([jsContent], { type: 'application/javascript;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'chants-data.js';
+      a.click();
+      showToast('ดาวน์โหลด chants-data.js (รวมบทสวด + เพลย์ลิสต์ + โมดูลเสริม) เรียบร้อยแล้ว');
+    }
+
+    // ---------------------------------------------------------
+    // MODULAR PLUGIN ENGINE FUNCTIONS
+    // ---------------------------------------------------------
+    function loadAllRegisteredModules() {
+      // 1. Load external .js files registered in modulesConfig
+      (modulesConfig.externalFiles || []).forEach(filePath => {
+        injectExternalScript(filePath);
+      });
+
+      // 2. Execute enabled inline modules
+      (modulesConfig.inlineModules || []).forEach(mod => {
+        if (mod.enabled && mod.code) {
+          try {
+            const fn = new Function('ZenChantApp', mod.code);
+            fn(window.ZenChantApp);
+          } catch (err) {
+            console.error(`[Module Error: ${mod.name}]`, err);
+          }
+        }
+      });
+
+      // 3. Run onInit hooks
+      window.ZenChantApp.hooks.onInit.forEach(fn => { try { fn(window.ZenChantApp); } catch (e) {} });
+    }
+
+    function injectExternalScript(srcPath) {
+      if (!srcPath) return;
+      const s = document.createElement('script');
+      s.src = srcPath;
+      s.async = false;
+      s.onerror = () => {}; // Silently ignore if file not placed in folder yet
+      document.body.appendChild(s);
+    }
+
+    function openModuleManagerModal() {
+      renderModuleManagerLists();
+      document.getElementById('module-manager-modal').classList.remove('hidden');
+    }
+
+    function closeModuleManagerModal() {
+      document.getElementById('module-manager-modal').classList.add('hidden');
+    }
+
+    function addExternalModuleFile() {
+      const input = document.getElementById('new-external-module-file');
+      const val = (input ? input.value : '').trim();
+      if (!val) return;
+      if (!modulesConfig.externalFiles.includes(val)) {
+        modulesConfig.externalFiles.push(val);
+        saveModulesConfig();
+        injectExternalScript(val);
+        showToast(`เพิ่มและโหลดไฟล์โมดูล "${val}" แล้ว`);
+      }
+      input.value = '';
+      renderModuleManagerLists();
+    }
+
+    function removeExternalModuleFile(idx) {
+      modulesConfig.externalFiles.splice(idx, 1);
+      saveModulesConfig();
+      renderModuleManagerLists();
+      showToast('ลบรายชื่อไฟล์โมดูลแล้ว (รีเฟรชหน้าเว็บเพื่อยกเลิกการทำงาน)');
+    }
+
+    function saveInlineModule() {
+      const nameInput = document.getElementById('inline-module-name');
+      const codeInput = document.getElementById('inline-module-code');
+      const name = (nameInput ? nameInput.value : '').trim() || ('โมดูลเสริม #' + (modulesConfig.inlineModules.length + 1));
+      const code = (codeInput ? codeInput.value : '').trim();
+      if (!code) {
+        showToast('กรุณาวางโค้ด JavaScript ของโมดูลก่อนบันทึก');
+        return;
+      }
+
+      const modObj = { id: 'mod-' + Date.now(), name, code, enabled: true };
+      modulesConfig.inlineModules.push(modObj);
+      saveModulesConfig();
+
+      try {
+        const fn = new Function('ZenChantApp', code);
+        fn(window.ZenChantApp);
+        showToast(`รันโมดูล "${name}" สำเร็จแล้ว!`);
+      } catch (err) {
+        showToast(`โค้ดโมดูลมีข้อผิดพลาด: ${err.message}`);
+      }
+
+      nameInput.value = '';
+      codeInput.value = '';
+      renderModuleManagerLists();
+    }
+
+    function uploadInlineModuleFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const code = e.target.result;
+        const name = file.name.replace(/\.js$/i, '');
+        const modObj = { id: 'mod-' + Date.now(), name, code, enabled: true };
+        modulesConfig.inlineModules.push(modObj);
+        saveModulesConfig();
+        try {
+          const fn = new Function('ZenChantApp', code);
+          fn(window.ZenChantApp);
+          showToast(`นำเข้าและรันโมดูล "${file.name}" สำเร็จ!`);
+        } catch (err) {
+          showToast(`ข้อผิดพลาดในไฟล์โมดูล: ${err.message}`);
+        }
+        renderModuleManagerLists();
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function toggleInlineModule(idx) {
+      if (!modulesConfig.inlineModules[idx]) return;
+      modulesConfig.inlineModules[idx].enabled = !modulesConfig.inlineModules[idx].enabled;
+      saveModulesConfig();
+      renderModuleManagerLists();
+      showToast('บันทึกสถานะโมดูลแล้ว กรุณารีเฟรชหน้าเว็บ 1 ครั้งเพื่อให้มีผลสมบูรณ์');
+    }
+
+    function deleteInlineModule(idx) {
+      modulesConfig.inlineModules.splice(idx, 1);
+      saveModulesConfig();
+      renderModuleManagerLists();
+      showToast('ลบโมดูลแล้ว กรุณารีเฟรชหน้าเว็บ 1 ครั้ง');
+    }
+
+    function renderModuleManagerLists() {
+      const extEl = document.getElementById('external-modules-list');
+      const inlEl = document.getElementById('inline-modules-list');
+
+      if (extEl) {
+        if (!modulesConfig.externalFiles || modulesConfig.externalFiles.length === 0) {
+          extEl.innerHTML = `<p class="text-[11px] text-[var(--text-muted)]">ยังไม่มีไฟล์เพิ่มเติม (ระบบเปิดช่องอัตโนมัติ <code>module-1.js</code> ถึง <code>module-10.js</code> ไว้ให้แล้ว)</p>`;
+        } else {
+          extEl.innerHTML = modulesConfig.externalFiles.map((f, i) => `
+            <div class="flex items-center justify-between px-3 py-1.5 rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-xs">
+              <span class="font-mono text-[var(--text-primary)]">📄 ${escapeHtml(f)}</span>
+              <button onclick="removeExternalModuleFile(${i})" class="text-red-600 hover:underline text-[11px]">ลบออก</button>
+            </div>
+          `).join('');
+        }
+      }
+
+      if (inlEl) {
+        if (!modulesConfig.inlineModules || modulesConfig.inlineModules.length === 0) {
+          inlEl.innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-3">ยังไม่มีโมดูลโค้ดเสริมในระบบ</p>`;
+        } else {
+          inlEl.innerHTML = modulesConfig.inlineModules.map((m, i) => `
+            <div class="p-3 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full ${m.enabled ? 'bg-green-600' : 'bg-gray-400'}"></span>
+                  <h4 class="text-xs sm:text-sm font-semibold text-[var(--text-primary)] truncate">${escapeHtml(m.name)}</h4>
+                </div>
+                <p class="text-[11px] font-mono text-[var(--text-muted)] line-clamp-1 mt-0.5">${escapeHtml(m.code.slice(0, 90))}...</p>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button onclick="toggleInlineModule(${i})"
+                  class="px-2.5 py-1 rounded-lg text-xs font-medium ${m.enabled ? 'bg-[var(--accent)] text-[#FAF8F2]' : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)]'}">
+                  ${m.enabled ? 'เปิดอยู่' : 'ปิดอยู่'}
+                </button>
+                <button onclick="deleteInlineModule(${i})" class="px-2 py-1 rounded-lg text-xs text-red-600 hover:bg-red-500/10">ลบ</button>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    // ---------------------------------------------------------
+    // GLOBAL LISTENERS & UTILITIES
+    // ---------------------------------------------------------
+    function setupGlobalListeners() {
+      window.addEventListener('scroll', () => {
+        if (!activeSession.isChanting || prefs.readingMode !== 'scroll') return;
+        updateTimelineUI();
+        const blocks = document.querySelectorAll('.chant-continuous-block');
+        let activeIdx = 0;
+        blocks.forEach((b, idx) => {
+          const rect = b.getBoundingClientRect();
+          if (rect.top <= window.innerHeight * 0.45) activeIdx = idx;
+        });
+        if (activeIdx !== activeSession.currentChantIndex) {
+          activeSession.currentChantIndex = activeIdx;
+          updateContinuousHudHeader();
+        }
+      }, { passive: true });
+
+      let lastMouseWake = 0;
+      window.addEventListener('mousemove', () => {
+        if (!activeSession.isChanting) return;
+        const now = Date.now();
+        if (now - lastMouseWake > 250) {
+          lastMouseWake = now;
+          showHudTemporarily();
+        }
+      }, { passive: true });
+
+      window.addEventListener('click', () => {
+        const homePop = document.getElementById('home-eyecare-popover');
+        if (homePop && !homePop.classList.contains('hidden')) homePop.classList.add('hidden');
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (!activeSession.isChanting) return;
+        if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+        if (e.code === 'Space') {
+          e.preventDefault();
+          showHudTemporarily();
+          toggleAutoScroll();
+        } else if (e.code === 'ArrowRight' && prefs.readingMode === 'page') {
+          e.preventDefault();
+          changePage(1);
+        } else if (e.code === 'ArrowLeft' && prefs.readingMode === 'page') {
+          e.preventDefault();
+          changePage(-1);
+        } else if (e.code === 'Escape') {
+          if (activeSession.activePopover) closeHudPopovers();
+          else exitChantingMode();
+        }
+      });
+    }
+
+    function openCustomConfirm(title, message, onConfirmCallback) {
+      document.getElementById('confirm-modal-title').textContent = title;
+      document.getElementById('confirm-modal-message').textContent = message;
+      const modal = document.getElementById('custom-confirm-modal');
+      const okBtn = document.getElementById('confirm-modal-ok-btn');
+
+      okBtn.onclick = () => {
+        closeCustomConfirm();
+        if (typeof onConfirmCallback === 'function') onConfirmCallback();
+      };
+      modal.classList.remove('hidden');
+    }
+
+    function closeCustomConfirm() {
+      document.getElementById('custom-confirm-modal').classList.add('hidden');
+    }
+
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2.5 rounded-full backdrop-blur-md bg-[#262320]/90 text-[#F7F4EB] border border-white/15 shadow-lg text-xs sm:text-sm font-medium transition-all duration-300 opacity-0 translate-y-[-8px]';
+      toast.textContent = message;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0', 'translate-y-[-8px]');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-[-8px]');
+        setTimeout(() => toast.remove(), 300);
+      }, 2600);
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+
+  <!-- =========================================================
+       EXTERNAL DATA & AUTOMATIC MODULE SLOTS (ไม่ต้องแก้ไฟล์นี้อีก)
+       ========================================================= -->
+  <script src="chants-data.js"></script>
+  <script src="module-1.js"></script>
+  <script src="module-2.js"></script>
+  <script src="module-3.js"></script>
+  <script src="module-4.js"></script>
+  <script src="module-5.js"></script>
+  <script src="module-6.js"></script>
+  <script src="module-7.js"></script>
+  <script src="module-8.js"></script>
+  <script src="module-9.js"></script>
+  <script src="module-10.js"></script>
+</body>
+</html>
